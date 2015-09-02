@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans
+	xmlns="http://www.springframework.org/schema/security"
+	xmlns:beans="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+                        http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
+
+	<debug />
+
+	<!-- 此目录下不需要过滤 -->
+	<http
+		pattern="/**.jsp"
+		security="none" />
+	<http
+		pattern="/druid/**"
+		security="none" />
+	<!-- 基于Session Cookie的权限验证 -->
+	<http use-expressions="true">
+		<csrf disabled="true" /><!-- 好可恶，在这里浪费了一周时间。还不知道有啥用先关闭掉。 -->
+		<form-login
+			login-page="/login.jsp"
+			default-target-url="/index.jsp" />
+		<logout logout-success-url="/logout.jsp" />
+		<access-denied-handler error-page="/access-error.jsp" />
+		<session-management invalid-session-url="/invalid-session.jsp"><!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
+			<concurrency-control
+				max-sessions="1"
+				expired-url="/expired-session.jsp" />
+		</session-management>
+		<custom-filter
+			ref="securityInterceptor"
+			before="FILTER_SECURITY_INTERCEPTOR" />
+	</http>
+	<beans:bean
+		name="securityInterceptor"
+		class="org.artifact.security.intercept.SecurityInterceptor">
+		<!-- 用户拥有的权限 -->
+		<beans:property
+			name="authenticationManager"
+			ref="authenticationManagerImpl" />
+		<!-- 用户是否拥有所请求资源的权限 -->
+		<beans:property
+			name="accessDecisionManager"
+			ref="accessDecisionManagerImpl" />
+		<!-- 资源与权限对应关系 -->
+		<beans:property
+			name="securityMetadataSource"
+			ref="securityMetadataSourceImpl" />
+	</beans:bean>
+
+	<authentication-manager id="authenticationManagerImpl">
+		<authentication-provider user-service-ref="userDetailsServiceImpl">
+			<password-encoder hash="bcrypt" /><!-- 密码加密不起作用。貌似DaoAuthenticationProvider存在Bug -->
+		</authentication-provider>
+	</authentication-manager>
+	<!-- 密码加密策略 -->
+	<!-- <beans:bean name="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" /> -->
+
+</beans:beans>
