@@ -4,6 +4,7 @@
 package org.artifact.base.util;
 
 import java.io.IOException;
+import java.io.InputStream;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -52,5 +53,23 @@ public class JsonUtil {
 	public static <T> T parse(String json, Class<T> clazz)
 			throws JsonParseException, JsonMappingException, IOException {
 		return mapper.readValue(json, clazz);
+	}
+
+	/**
+	 * 输入流抓对象
+	 * <p>
+	 * 日期：2015年9月6日
+	 * 
+	 * @param src
+	 * @param clazz
+	 * @return
+	 * @throws JsonParseException
+	 * @throws JsonMappingException
+	 * @throws IOException
+	 * @author Netbug
+	 */
+	public static <T> T parse(InputStream src, Class<T> clazz)
+			throws JsonParseException, JsonMappingException, IOException {
+		return mapper.readValue(src, clazz);
 	}
 }

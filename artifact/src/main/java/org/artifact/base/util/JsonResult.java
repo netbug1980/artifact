@@ -16,7 +16,18 @@ public class JsonResult {
 
 	public final static int SUCCESS = 0;
 	public final static int ERROR = -1;
-
+	public final static JsonResult LOGIN_FAILURE_RESULT = new JsonResult(-2,
+			"登陆失败", null);
+	public final static JsonResult LOGIN_FAILURE_NOUSER_RESULT = new JsonResult(
+			-20, "用户不存在", null);
+	public final static JsonResult LOGIN_FAILURE_ERRPASSORD_RESULT = new JsonResult(
+			-21, "密码不正确", null);
+	public final static JsonResult SESSION_INVALID_RESULT = new JsonResult(-30,
+			"Session失效", null);
+	public final static JsonResult SESSION_EXPIRED_RESULT = new JsonResult(-31,
+			"Session过期，您已在别处登陆", null);
+	public final static JsonResult ACCESS_ERROR_RESULT = new JsonResult(-4,
+			"权限不足", null);
 	private int code = SUCCESS;
 
 	private String message = "";

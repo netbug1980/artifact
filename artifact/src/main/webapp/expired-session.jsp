@@ -2,6 +2,6 @@
 <%
 	response.setCharacterEncoding("UTF-8");
 	response.setContentType("application/json;charset=UTF-8");
-	JsonResult result = new JsonResult(-3, "Session过期", null);
+	JsonResult result = JsonResult.SESSION_EXPIRED_RESULT;
 	out.write(JsonUtil.stringify(result));
 %>

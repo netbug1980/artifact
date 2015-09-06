@@ -16,11 +16,11 @@
 		pattern="/druid/**"
 		security="none" />
 	<!-- 基于Session Cookie的权限验证 -->
-	<http use-expressions="true">
+	<http
+		use-expressions="true"
+		entry-point-ref="authenticationProcessingFilterEntryPoint">
 		<csrf disabled="true" /><!-- 好可恶，在这里浪费了一周时间。还不知道有啥用先关闭掉。 -->
-		<form-login
-			login-page="/login.jsp"
-			default-target-url="/index.jsp" />
+		<!-- <form-login login-page="/login.jsp" default-target-url="/index.jsp" authentication-failure-handler-ref="authenticationFailureHandlerImpl" /> -->
 		<logout logout-success-url="/logout.jsp" />
 		<access-denied-handler error-page="/access-error.jsp" />
 		<session-management invalid-session-url="/invalid-session.jsp"><!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
@@ -31,7 +31,33 @@
 		<custom-filter
 			ref="securityInterceptor"
 			before="FILTER_SECURITY_INTERCEPTOR" />
+		<custom-filter
+			ref="loginFilter"
+			position="FORM_LOGIN_FILTER" />
 	</http>
+
+	<!-- 登陆拦截器 -->
+	<beans:bean
+		name="loginFilter"
+		class="org.artifact.security.intercept.UsernamePasswordAuthenticationFilter">
+		<beans:property
+			name="authenticationManager"
+			ref="authenticationManagerImpl" />
+		<beans:property
+			name="authenticationSuccessHandler"
+			ref="authenticationSuccessHandlerImpl" />
+		<beans:property
+			name="authenticationFailureHandler"
+			ref="authenticationFailureHandlerImpl" />
+	</beans:bean>
+	<!-- 未登录的切入点 -->
+	<beans:bean
+		id="authenticationProcessingFilterEntryPoint"
+		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+		<beans:constructor-arg value="/login.jsp" />
+	</beans:bean>
+
+	<!-- 权限验证 -->
 	<beans:bean
 		name="securityInterceptor"
 		class="org.artifact.security.intercept.SecurityInterceptor">
@@ -51,10 +77,8 @@
 
 	<authentication-manager id="authenticationManagerImpl">
 		<authentication-provider user-service-ref="userDetailsServiceImpl">
-			<password-encoder hash="bcrypt" /><!-- 密码加密不起作用。貌似DaoAuthenticationProvider存在Bug -->
+			<password-encoder hash="bcrypt" /><!-- 加密策略，貌似当自定义FORM_LOGIN_FILTER时才会生效 -->
 		</authentication-provider>
 	</authentication-manager>
-	<!-- 密码加密策略 -->
-	<!-- <beans:bean name="passwordEncoder" class="org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder" /> -->
 
 </beans:beans>

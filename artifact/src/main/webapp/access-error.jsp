@@ -2,6 +2,6 @@
 <%
 	response.setCharacterEncoding("UTF-8");
 	response.setContentType("application/json;charset=UTF-8");
-	JsonResult result = new JsonResult(-2, "权限不足", null);
+	JsonResult result = JsonResult.ACCESS_ERROR_RESULT;
 	out.write(JsonUtil.stringify(result));
 %>
