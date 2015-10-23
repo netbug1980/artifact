@@ -1,78 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<beans:beans
-	xmlns="http://www.springframework.org/schema/security"
-	xmlns:beans="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:beans="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.1.xsd
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
-	<debug />
-
 	<!-- 此目录下不需要过滤 -->
-	<http
-		pattern="/**.jsp"
-		security="none" />
-	<http
-		pattern="/druid/**"
-		security="none" />
+	<http pattern="/**.jsp" security="none" />
+	<http pattern="/druid/**" security="none" />
 	<!-- 基于Session Cookie的权限验证 -->
-	<http
-		use-expressions="true"
-		entry-point-ref="authenticationProcessingFilterEntryPoint">
+	<http use-expressions="true" entry-point-ref="authenticationProcessingFilterEntryPoint">
 		<csrf disabled="true" /><!-- 好可恶，在这里浪费了一周时间。还不知道有啥用先关闭掉。 -->
 		<!-- <form-login login-page="/login.jsp" default-target-url="/index.jsp" authentication-failure-handler-ref="authenticationFailureHandlerImpl" /> -->
 		<logout logout-success-url="/logout.jsp" />
 		<access-denied-handler error-page="/security/access-error.jsp" />
 		<session-management invalid-session-url="/security/invalid-session.jsp"><!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
-			<concurrency-control
-				max-sessions="1"
-				expired-url="/security/expired-session.jsp" />
+			<concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" />
 		</session-management>
-		<custom-filter
-			ref="securityInterceptor"
-			before="FILTER_SECURITY_INTERCEPTOR" />
-		<custom-filter
-			ref="loginFilter"
-			position="FORM_LOGIN_FILTER" />
+		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+		<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />
 	</http>
 
 	<!-- 登陆拦截器 -->
-	<beans:bean
-		name="loginFilter"
-		class="org.artifact.security.intercept.UsernamePasswordAuthenticationFilter">
-		<beans:property
-			name="authenticationManager"
-			ref="authenticationManagerImpl" />
-		<beans:property
-			name="authenticationSuccessHandler"
-			ref="authenticationSuccessHandlerImpl" />
-		<beans:property
-			name="authenticationFailureHandler"
-			ref="authenticationFailureHandlerImpl" />
+	<beans:bean name="loginFilter" class="org.artifact.security.intercept.UsernamePasswordAuthenticationFilter">
+		<beans:property name="authenticationManager" ref="authenticationManagerImpl" />
+		<beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandlerImpl" />
+		<beans:property name="authenticationFailureHandler" ref="authenticationFailureHandlerImpl" />
 	</beans:bean>
 	<!-- 未登录的切入点 -->
-	<beans:bean
-		id="authenticationProcessingFilterEntryPoint"
-		class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
+	<beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
 		<beans:constructor-arg value="/login.jsp" />
 	</beans:bean>
 
 	<!-- 权限验证 -->
-	<beans:bean
-		name="securityInterceptor"
-		class="org.artifact.security.intercept.SecurityInterceptor">
+	<beans:bean name="securityInterceptor" class="org.artifact.security.intercept.SecurityInterceptor">
 		<!-- 用户拥有的权限 -->
-		<beans:property
-			name="authenticationManager"
-			ref="authenticationManagerImpl" />
+		<beans:property name="authenticationManager" ref="authenticationManagerImpl" />
 		<!-- 用户是否拥有所请求资源的权限 -->
-		<beans:property
-			name="accessDecisionManager"
-			ref="accessDecisionManagerImpl" />
+		<beans:property name="accessDecisionManager" ref="accessDecisionManagerImpl" />
 		<!-- 资源与权限对应关系 -->
-		<beans:property
-			name="securityMetadataSource"
-			ref="securityMetadataSourceImpl" />
+		<beans:property name="securityMetadataSource" ref="securityMetadataSourceImpl" />
 	</beans:bean>
 
 	<authentication-manager id="authenticationManagerImpl">
