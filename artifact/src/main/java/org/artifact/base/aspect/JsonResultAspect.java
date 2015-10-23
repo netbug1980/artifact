@@ -70,7 +70,7 @@ public class JsonResultAspect {
 			desc = jsonResultAnno.value();
 			Object[] args = joinPoint.getArgs();
 			if (args != null && args.length > 0) {
-				argsJson = JsonUtil.stringify(args);
+				argsJson = JsonUtil.stringify(args); //TODO 处理Json序列化异常，否则会影响后续代码执行
 			}
 			Object returnValue = joinPoint.proceed();
 			JsonResult jsonResult = new JsonResult(returnValue);

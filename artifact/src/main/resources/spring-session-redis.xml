@@ -19,8 +19,8 @@
 	<beans:bean id="redisTemplate" class="org.springframework.data.redis.core.StringRedisTemplate">
 		<beans:property name="connectionFactory" ref="jedisConnectionFactory" />
 	</beans:bean>
-
+	
 	<beans:bean id="redisHttpSessionConfiguration" class="org.springframework.session.data.redis.config.annotation.web.http.RedisHttpSessionConfiguration">
-		<beans:property name="maxInactiveIntervalInSeconds" value="1800" />
+		<beans:property name="maxInactiveIntervalInSeconds" value="1800" /><!-- 覆盖"session-timeout"配置 -->
 	</beans:bean>
 </beans:beans>
