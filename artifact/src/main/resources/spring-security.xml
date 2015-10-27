@@ -3,30 +3,39 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
 	<!-- 此目录下不需要过滤 -->
-	<http pattern="/**.jsp" security="none" />
-	<http pattern="/druid/**" security="none" />
+	<!-- <http pattern="/druid/**" security="none"></http> -->
 	<!-- 基于Session Cookie的权限验证 -->
-	<http use-expressions="true" entry-point-ref="authenticationProcessingFilterEntryPoint">
-		<csrf disabled="true" /><!-- 好可恶，在这里浪费了一周时间。还不知道有啥用先关闭掉。 -->
-		<!-- <form-login login-page="/login.jsp" default-target-url="/index.jsp" authentication-failure-handler-ref="authenticationFailureHandlerImpl" /> -->
-		<logout logout-success-url="/logout.jsp" />
+	<http pattern="/api/**" entry-point-ref="authenticationEntryPointImpl">
+		<csrf disabled="true" />
 		<access-denied-handler error-page="/security/access-error.jsp" />
+		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
 		<session-management invalid-session-url="/security/invalid-session.jsp"><!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
 			<concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" />
 		</session-management>
-		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
+	</http>
+	<http pattern="/druid/**" entry-point-ref="authenticationEntryPointImpl">
+		<csrf disabled="true" />
+		<headers>
+			<content-type-options disabled="true" />
+			<frame-options disabled="true" />
+			<cache-control disabled="true" />
+			<xss-protection disabled="true" />
+		</headers>
+		<intercept-url pattern="/druid/**" access="hasRole('超级管理员')" />
+	</http>
+	<http pattern="/login" entry-point-ref="authenticationEntryPointImpl">
+		<csrf disabled="true" />
 		<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />
 	</http>
-
+	<http pattern="/logout" entry-point-ref="authenticationEntryPointImpl">
+		<csrf disabled="true" />
+		<logout success-handler-ref="logoutSuccessHandlerImpl" />
+	</http>
 	<!-- 登陆拦截器 -->
 	<beans:bean name="loginFilter" class="org.artifact.security.intercept.UsernamePasswordAuthenticationFilter">
 		<beans:property name="authenticationManager" ref="authenticationManagerImpl" />
-		<beans:property name="authenticationSuccessHandler" ref="authenticationSuccessHandlerImpl" />
-		<beans:property name="authenticationFailureHandler" ref="authenticationFailureHandlerImpl" />
-	</beans:bean>
-	<!-- 未登录的切入点 -->
-	<beans:bean id="authenticationProcessingFilterEntryPoint" class="org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint">
-		<beans:constructor-arg value="/login.jsp" />
+		<beans:property name="authenticationSuccessHandler" ref="loginSuccessHandlerImpl" />
+		<beans:property name="authenticationFailureHandler" ref="loginFailureHandlerImpl" />
 	</beans:bean>
 
 	<!-- 权限验证 -->

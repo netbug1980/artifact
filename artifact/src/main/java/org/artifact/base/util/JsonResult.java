@@ -22,6 +22,8 @@ public class JsonResult {
 			-20, "用户不存在", null);
 	public final static JsonResult LOGIN_FAILURE_ERRPASSORD_RESULT = new JsonResult(
 			-21, "密码不正确", null);
+	public final static JsonResult LOGIN_FAILURE_NOTLOGIN_RESULT = new JsonResult(
+			-22, "请先登录", null);
 	public final static JsonResult SESSION_INVALID_RESULT = new JsonResult(-30,
 			"Session失效", null);
 	public final static JsonResult SESSION_EXPIRED_RESULT = new JsonResult(-31,

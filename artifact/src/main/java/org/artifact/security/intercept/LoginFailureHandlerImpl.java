@@ -24,7 +24,7 @@ import org.springframework.stereotype.Component;
  */
 
 @Component
-public class AuthenticationFailureHandlerImpl implements
+public class LoginFailureHandlerImpl implements
 		AuthenticationFailureHandler {
 
 	public void onAuthenticationFailure(HttpServletRequest request,
