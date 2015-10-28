@@ -3,7 +3,11 @@
                         http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security-4.0.xsd">
 
 	<!-- 此目录下不需要过滤 -->
-	<!-- <http pattern="/druid/**" security="none"></http> -->
+	<http pattern="/**/*.js" security="none" />
+	<http pattern="/**/*.css" security="none" />
+	<http pattern="/**/*.jpg" security="none" />
+	<http pattern="/**/*.gif" security="none" />
+	<http pattern="/**/*.png" security="none" />
 	<!-- 基于Session Cookie的权限验证 -->
 	<http pattern="/api/**" entry-point-ref="authenticationEntryPointImpl">
 		<csrf disabled="true" />
@@ -21,7 +25,8 @@
 			<cache-control disabled="true" />
 			<xss-protection disabled="true" />
 		</headers>
-		<intercept-url pattern="/druid/**" access="hasRole('超级管理员')" />
+		<access-denied-handler ref="accessDeniedHandlerImpl" />
+		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
 	</http>
 	<http pattern="/login" entry-point-ref="authenticationEntryPointImpl">
 		<csrf disabled="true" />

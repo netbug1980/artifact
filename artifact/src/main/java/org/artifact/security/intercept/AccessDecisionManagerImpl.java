@@ -53,7 +53,7 @@ public class AccessDecisionManagerImpl implements AccessDecisionManager {
 				}
 			}
 		}
-		throw new AccessDeniedException("没有权限访问");
+		throw new AccessDeniedException("权限不足");
 	}
 
 	public boolean supports(ConfigAttribute attribute) {
