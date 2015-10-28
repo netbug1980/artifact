@@ -7,7 +7,7 @@
 	<!-- 基于Session Cookie的权限验证 -->
 	<http pattern="/api/**" entry-point-ref="authenticationEntryPointImpl">
 		<csrf disabled="true" />
-		<access-denied-handler error-page="/security/access-error.jsp" />
+		<access-denied-handler ref="accessDeniedHandlerImpl" />
 		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
 		<session-management invalid-session-url="/security/invalid-session.jsp"><!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
 			<concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" />
