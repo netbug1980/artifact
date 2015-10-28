@@ -23,8 +23,9 @@
 	<aop:config proxy-target-class="true">
 		<aop:advisor advice-ref="druid-stat-interceptor" pointcut-ref="druid-stat-pointcut" />
 	</aop:config>
-	
-	<import resource="spring-hibernate.xml"/>
-	<import resource="spring-security.xml"/>
-	<import resource="spring-session-redis.xml"/>
+
+	<import resource="spring-hibernate.xml" />
+	<import resource="spring-security.xml" />
+	<!-- <import resource="spring-security-oauth2.xml"/> --><!-- 未集成成功 -->
+	<import resource="spring-session-redis.xml" />
 </beans>
