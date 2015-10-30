@@ -13,7 +13,10 @@
 		<csrf request-matcher-ref="requiresCsrfMatcher" token-repository-ref="httpSessionCsrfTokenRepository" />
 		<access-denied-handler ref="accessDeniedHandlerImpl" />
 		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
-		<!-- <session-management invalid-session-url="/security/invalid-session.jsp">此处需要覆写UserDetails实现类的equals和hashCode方法 <concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" /> </session-management> -->
+		<session-management invalid-session-url="/security/invalid-session.jsp">
+			<!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
+			<concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" />
+		</session-management>
 	</http>
 	<http pattern="/druid/**" entry-point-ref="authenticationEntryPointImpl">
 		<csrf disabled="true" />
@@ -72,14 +75,15 @@
 			</beans:list>
 		</beans:property>
 	</beans:bean>
-	
+
+	<!-- 登陆成功后的处理方法并自定义返回结果 -->
 	<beans:bean name="loginSuccessHandlerImpl" class="org.artifact.security.intercept.LoginSuccessHandlerImpl">
 		<beans:property name="loginSuccessHandlerList">
 			<beans:list>
-				<beans:ref bean="loginSuccessHandlerCsrfImpl"/>
+				<beans:ref bean="loginSuccessHandlerCsrfImpl" />
 			</beans:list>
 		</beans:property>
 	</beans:bean>
-	
+
 
 </beans:beans>

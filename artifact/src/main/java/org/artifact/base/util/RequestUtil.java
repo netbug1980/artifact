@@ -32,7 +32,7 @@ public class RequestUtil {
 			} catch (JsonProcessingException e) {
 
 			}
-			logger.info("Session.{}={}", name, valueStr);
+			logger.debug("Session.{}={}", name, valueStr);
 		}
 	}
 
@@ -55,7 +55,7 @@ public class RequestUtil {
 			} catch (JsonProcessingException e) {
 
 			}
-			logger.info("HttpHeader.{}={}", name, valueStr);
+			logger.debug("HttpHeader.{}={}", name, valueStr);
 		}
 	}
 
