@@ -5,5 +5,5 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 public class BaseTest {
 	protected static ApplicationContext ctx = new ClassPathXmlApplicationContext(
-			new String[] { "spring.xml", "spring-hibernate.xml" });
+			new String[] { "spring-test.xml" });
 }
