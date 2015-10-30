@@ -10,6 +10,7 @@ import org.artifact.base.util.JsonResult;
 import org.artifact.base.util.JsonUtil;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.csrf.CsrfException;
 import org.springframework.stereotype.Component;
 
 /**
@@ -27,9 +28,12 @@ public class AccessDeniedHandlerImpl implements AccessDeniedHandler {
 			HttpServletResponse response,
 			AccessDeniedException accessDeniedException) throws IOException,
 			ServletException {
+		JsonResult result = JsonResult.ACCESS_DENIED_RESULT;
+		if (accessDeniedException instanceof CsrfException) {
+			result = JsonResult.ACCESS_DENIED_CSRF_RESULT;
+		}
 		response.setCharacterEncoding("UTF-8");
 		response.setContentType("application/json;charset=UTF-8");
-		JsonResult result = JsonResult.ACCESS_ERROR_RESULT;
 		response.getWriter().write(JsonUtil.stringify(result));
 		response.getWriter().flush();
 	}

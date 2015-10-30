@@ -10,12 +10,10 @@
 	<http pattern="/**/*.png" security="none" />
 	<!-- 基于Session Cookie的权限验证 -->
 	<http pattern="/api/**" entry-point-ref="authenticationEntryPointImpl">
-		<csrf disabled="true" />
+		<csrf request-matcher-ref="requiresCsrfMatcher" token-repository-ref="httpSessionCsrfTokenRepository" />
 		<access-denied-handler ref="accessDeniedHandlerImpl" />
 		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
-		<session-management invalid-session-url="/security/invalid-session.jsp"><!-- 此处需要覆写UserDetails实现类的equals和hashCode方法 -->
-			<concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" />
-		</session-management>
+		<!-- <session-management invalid-session-url="/security/invalid-session.jsp">此处需要覆写UserDetails实现类的equals和hashCode方法 <concurrency-control max-sessions="1" expired-url="/security/expired-session.jsp" /> </session-management> -->
 	</http>
 	<http pattern="/druid/**" entry-point-ref="authenticationEntryPointImpl">
 		<csrf disabled="true" />
@@ -29,11 +27,13 @@
 		<custom-filter ref="securityInterceptor" before="FILTER_SECURITY_INTERCEPTOR" />
 	</http>
 	<http pattern="/login" entry-point-ref="authenticationEntryPointImpl">
-		<csrf disabled="true" />
+		<csrf request-matcher-ref="requiresCsrfMatcher" token-repository-ref="httpSessionCsrfTokenRepository" />
+		<access-denied-handler ref="accessDeniedHandlerImpl" />
 		<custom-filter ref="loginFilter" position="FORM_LOGIN_FILTER" />
 	</http>
 	<http pattern="/logout" entry-point-ref="authenticationEntryPointImpl">
-		<csrf disabled="true" />
+		<csrf request-matcher-ref="requiresCsrfMatcher" token-repository-ref="httpSessionCsrfTokenRepository" />
+		<access-denied-handler ref="accessDeniedHandlerImpl" />
 		<logout success-handler-ref="logoutSuccessHandlerImpl" />
 	</http>
 	<!-- 登陆拦截器 -->
@@ -58,5 +58,20 @@
 			<password-encoder hash="bcrypt" /><!-- 加密策略，貌似当自定义FORM_LOGIN_FILTER时才会生效 -->
 		</authentication-provider>
 	</authentication-manager>
+
+	<!-- CSRF -->
+	<!-- 修复CsrfToken只生成没有存储到Session中问题 -->
+	<beans:bean name="httpSessionCsrfTokenRepository" class="org.artifact.security.intercept.HttpSessionCsrfTokenRepository">
+		<beans:property name="sessionAttributeName" value="CSRF_TOKEN"></beans:property>
+	</beans:bean>
+	<!-- 指定部分URL不做Csrf验证 -->
+	<beans:bean name="requiresCsrfMatcher" class="org.artifact.security.intercept.RequiresCsrfMatcher">
+		<beans:property name="ignoreUrlList">
+			<beans:list>
+				<beans:value>/login</beans:value>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+
 
 </beans:beans>

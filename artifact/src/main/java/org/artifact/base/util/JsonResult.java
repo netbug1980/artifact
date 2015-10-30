@@ -28,8 +28,10 @@ public class JsonResult {
 			"Session失效", null);
 	public final static JsonResult SESSION_EXPIRED_RESULT = new JsonResult(-31,
 			"Session过期，您已在别处登陆", null);
-	public final static JsonResult ACCESS_ERROR_RESULT = new JsonResult(-4,
-			"权限不足", null);
+	public final static JsonResult ACCESS_DENIED_RESULT = new JsonResult(-4,
+			"权限拒绝", null);
+	public final static JsonResult ACCESS_DENIED_CSRF_RESULT = new JsonResult(
+			-40, "权限拒绝之CSRF", null);
 	private int code = SUCCESS;
 
 	private String message = "";
