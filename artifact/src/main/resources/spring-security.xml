@@ -72,6 +72,14 @@
 			</beans:list>
 		</beans:property>
 	</beans:bean>
-
+	
+	<beans:bean name="loginSuccessHandlerImpl" class="org.artifact.security.intercept.LoginSuccessHandlerImpl">
+		<beans:property name="loginSuccessHandlerList">
+			<beans:list>
+				<beans:ref bean="loginSuccessHandlerCsrfImpl"/>
+			</beans:list>
+		</beans:property>
+	</beans:bean>
+	
 
 </beans:beans>
