@@ -1,0 +1,322 @@
+@theme-color: #5d9cec;
+@layout-header-height: 44px;
+@layout-lefter-width: 255px;
+@layout-lefter-min-width: 50px;
+@layout-lefter-bg-color: #2B2B2B;
+@layout-footer-height: 0px;
+.btn {
+	border-radius: 0px;
+	border: none;
+}
+
+.btn-group > .btn:first-child:not(:last-child):not(.dropdown-toggle) {
+	border-radius: 0;
+}
+
+.btn-group > .btn:last-child:not(:first-child) , .btn-group > .dropdown-toggle:not(:first-child) {
+	border-radius: 0;
+}
+
+.btn-group-vertical > .btn:first-child:not(:last-child) {
+	border-radius: 0;
+}
+
+.btn-group-vertical > .btn:last-child:not(:first-child) {
+	border-radius: 0;
+}
+
+.btn-lg , .btn-group-lg > .btn {
+	border-radius: 0px;
+}
+
+.form-control {
+	border-radius: 0px;
+}
+
+.btn-menu {
+	color: #fff;
+	background-color: @layout-lefter-bg-color;
+	border-color: @layout-lefter-bg-color;
+}
+
+.btn-menu:hover {
+	color: #fff;
+	background-color: darken(@layout-lefter-bg-color, 10%);
+	border-color: darken(@layout-lefter-bg-color, 10%);
+}
+
+.btn-menu:active , .btn-menu.active , .open > .dropdown-toggle.btn-menu {
+	color: #fff;
+	background-color: @theme-color;
+	border-color: @theme-color;
+}
+
+.btn-menu:active:hover , .btn-menu.active:hover , .open > .dropdown-toggle.btn-menu:hover {
+	color: #fff;
+	background-color: darken(@theme-color, 10%);
+	border-color: darken(@theme-color, 10%);
+}
+
+.btn-menu:active , .btn-menu.active , .open > .dropdown-toggle.btn-menu {
+	background-image: none;
+}
+
+.layout {
+	.layout-header {
+		height: @layout-header-height;
+		position: fixed;
+		top: 0px;
+		width: 100%;
+		z-index: 1000;
+		.title {
+			font-family: "Microsoft YaHei" ! important;
+			font-size: 16px;
+			font-weight: bold;
+		}
+
+		.pull-right {
+			line-height: @layout-header-height;
+			input {
+				width: 300px;
+				display: inline-block;
+			}
+		}
+
+		.add-title {
+			font-family: "Microsoft YaHei" ! important;
+			margin-left: 5px;
+		}
+	}
+
+	.layout-footer {
+		height: @layout-footer-height;
+		position: fixed;
+		bottom: 0px;
+		width: 100%;
+	}
+
+	.layout-lefter {
+		position: fixed;
+		top: @layout-header-height;
+		bottom: @layout-footer-height;
+		width: @layout-lefter-width;
+		background-color: #2B2B2B;
+		overflow: hidden;
+		ul {
+			position: absolute;
+			overflow: hidden;
+			width: 100%;
+			li {
+				height: 45px;
+				font-size: 16px;
+				line-height: 45px;
+				a {
+					color: #fff;
+					text-decoration: blink;
+					display: inline-block;
+					width: 100%;
+					padding-left: 16px;
+					white-space: nowrap;
+					.detail {
+						margin-left: 15px;
+						.title {
+							font-family: "Microsoft YaHei" ! important;
+							width: 125px;
+							display: inline-block;
+							white-space: nowrap;
+						}
+
+						.title-ext {
+							width: 60px;
+							display: inline-block;
+							text-align: right;
+							.badge {
+								margin-right: 5px;
+								margin-bottom: 5px;
+								background-color: #d9534f;
+								border-radius: 0px;
+							}
+						}
+					}
+				}
+			}
+
+			li:hover {
+				background-color: darken(@layout-lefter-bg-color, 10%);
+			}
+
+			li.active {
+				background-color: @theme-color;
+			}
+
+			li.active:hover {
+				background-color: darken(@theme-color, 10%);
+			}
+		}
+
+		.toper {
+			overflow-y: auto;
+			bottom: @layout-header-height * 2 + 1;
+			top: 0px;
+			right: 0%;
+		}
+
+		.toper.out {
+			right: 100%;
+			.layout-changing-left-right
+		}
+
+		.bottomer {
+			bottom: 0px;
+			right: 0%;
+			height: @layout-header-height * 2 + 1;
+			border-top: 1px solid #434343;
+		}
+
+		.bottomer.out {
+			right: 100%;
+			.layout-changing-left-right
+		}
+	}
+
+	.layout-container {
+		position: fixed;
+		margin-top: 1px;
+		top: @layout-header-height;
+		left: @layout-lefter-width;
+		bottom: @layout-footer-height;
+		right: 100%;
+		overflow: hidden;
+		.content {
+			position: absolute;
+			overflow-x: hidden;
+			overflow-y: auto;
+			top: 0px;
+			bottom: 0px;
+			right: 0px;
+			left: 100%;
+		}
+
+		.content.out {
+			left: 100%;
+			.layout-changing-left-right
+		}
+
+		.content.in {
+			left: 0%;
+			.layout-changing-left-right
+		}
+	}
+
+	.layout-container.out {
+		right: 100%;
+		.layout-changing-left-right
+	}
+
+	.layout-container.in {
+		right: 0%;
+		.layout-changing-left-right
+	}
+}
+
+.layout-changing-width {
+	-webkit-transition-property: width;
+	-o-transition-property: width;
+	transition-property: width;
+}
+
+.layout-changing-visibility {
+	-webkit-transition-property: visibility;
+	-o-transition-property: visibility;
+	transition-property: visibility;
+}
+
+.layout-changing-left {
+	-webkit-transition-property: left;
+	-o-transition-property: left;
+	transition-property: left;
+}
+
+.layout-changing-left-right {
+	-webkit-transition-property: left, right;
+	-o-transition-property: left, right;
+	transition-property: left, right;
+}
+
+.layout {
+	.layout-lefter , .layout-lefter .detail , .layout-lefter .toper , .layout-lefter .bottomer , .layout-container , .layout-container .content {
+		-webkit-transition-timing-function: ease;
+		-o-transition-timing-function: ease;
+		transition-timing-function: ease;
+		-webkit-transition-duration: .35s;
+		-o-transition-duration: .35s;
+		transition-duration: .35s;
+	}
+}
+
+.layout.in {
+	.layout-lefter {
+		width: @layout-lefter-width;
+		.layout-changing-width;
+		.detail {
+			visibility: visible;
+			.layout-changing-visibility;
+		}
+	}
+
+	.layout-container {
+		left: @layout-lefter-width;
+		.layout-changing-left-right
+	}
+}
+
+.layout.out {
+	.layout-lefter {
+		width: @layout-lefter-min-width;
+		.layout-changing-width;
+		.detail {
+			visibility: hidden;
+			.layout-changing-visibility;
+		}
+	}
+
+	.layout-container {
+		left: @layout-lefter-min-width;
+		.layout-changing-left-right
+	}
+}
+
+@media screen {
+	@media (max-width: 768px) {
+		.layout {
+			.layout-lefter {
+				width: @layout-lefter-min-width;
+				z-index: 1;
+				.detail {
+					visibility: hidden;
+				}
+			}
+
+			.layout-container {
+				left: @layout-lefter-min-width;
+			}
+		}
+
+		.layout.in {
+			.layout-lefter {
+				width: @layout-lefter-width;
+				.layout-changing-width;
+				.detail {
+					visibility: visible;
+					.layout-changing-visibility;
+				}
+			}
+
+			.layout-container {
+				left: @layout-lefter-min-width;
+				.layout-changing-left-right
+			}
+		}
+	}
+}
+

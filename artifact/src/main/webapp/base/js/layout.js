@@ -1,0 +1,208 @@
+$(function() {
+	var Layout = {
+			Lefter : {
+				minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
+				CurrentNav : null,
+				BackStack : new Array(),//导航返回按钮栈
+				TopperNav : [{
+					title : "导航1",
+					icon : "",
+					count:0,
+					childNav : [{
+						title : "导航11",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("导航11");
+						}
+					}, {
+						title : "导航12",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("导航12");
+						}
+					}, {
+						title : "导航13",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("导航13");
+						}
+					}],
+					callback : function() {
+						alert("导航1");
+					}
+				}, {
+					title : "导航2",
+					icon : "",
+					count:99,
+					childNav : [{
+						title : "导航21",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("导航21");
+						}
+					}, {
+						title : "导航22",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("导航22");
+						}
+					}],
+					callback : function() {
+						alert("导航2");
+					}
+				}, {
+					title : "导航3",
+					icon : "",
+					count:0,
+					childNav : [],
+					callback : function() {
+						alert("导航3");
+					}
+				}, {
+					title : "导航4",
+					icon : "",
+					count:0,
+					childNav : [],
+					callback : function() {
+						alert("导航4");
+					}
+				}],
+				BottomerNav : [{
+					title : "付磊森",
+					icon : "",
+					count:0,
+					childNav : [{
+						title : "个人信息",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("个人信息");
+						}
+					}, {
+						title : "注销",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							alert("注销");
+						}
+					}],
+					callback : function() {
+						
+					}
+				}, {
+					title : "设置",
+					icon : "",
+					count:0,
+					childNav : [],
+					callback : function() {
+						alert("设置");
+					}
+				}],
+			}
+		};
+	function flatNav(nav,path){
+		$(nav).each(function(i,item){
+			var temp = path;
+			item.path = path + item.title;
+			if(item.childNav.length==0){
+				if(Layout.Lefter.CurrentNav==null){
+					Layout.Lefter.CurrentNav = item;
+				}
+				return true;
+			}else{
+				path = path + item.title + "/";
+				flatNav(item.childNav,path);
+				path = temp;
+			}
+		});
+	}
+	flatNav(Layout.Lefter.TopperNav,"/");
+	flatNav(Layout.Lefter.BottomerNav,"/");
+	
+	function buildNav($this,nav){
+		$this.addClass("out");
+		setTimeout(function(){
+			$this.empty();
+			$(nav).each(function(i,item){
+				var $li = $("<li>").appendTo($this);
+				var $a = $("<a>").attr("href","#").appendTo($li);
+				item.icon = item.icon.trim()?item.icon:"glyphicon glyphicon-question-sign";
+				$("<span>").addClass(item.icon).appendTo($a);
+				var $detail = $("<span>").addClass("detail").appendTo($a);
+				$("<span>").addClass("title").text(item.title).appendTo($detail);
+				var $title_ext = $("<span>").addClass("title-ext").appendTo($detail);
+				$badge = $("<span>").addClass("badge").appendTo($title_ext);
+				if(item.count){
+					$badge.text(item.count);
+				}else{
+					$badge.addClass("invisible");
+				}
+				var $right = $("<span>").addClass("glyphicon glyphicon-chevron-right").appendTo($title_ext);
+				if(item.childNav.length==0){
+					$right.addClass("invisible");
+				}
+				$li.data('data',item);
+				$li.click(function(){
+					var item = $(this).data('data');
+					if(item.childNav.length>0){
+						
+						buildNav($this,item.childNav);//创建二级菜单
+						Layout.Lefter.BackStack.push({$this:$this,nav:nav});
+						$("#btn_nav_back").removeClass("invisible");
+						$("#btn_nav_back").unbind();
+						$("#btn_nav_back").click(function(){
+							var temp = Layout.Lefter.BackStack.pop();
+							buildNav(temp.$this,temp.nav);//恢复一级菜单
+							if(Layout.Lefter.BackStack.length==0){
+								$("#btn_nav_back").addClass("invisible");
+							}
+						});
+					}else{
+						if(!$(this).hasClass("active")){
+							Layout.Lefter.CurrentNav = item;
+							$(".layout .layout-lefter .active").removeClass("active");
+							$(this).addClass("active");
+							$(".layout-container").removeClass("in out");
+							setTimeout(function(){
+								$(".layout-container").addClass("in");
+								item.callback();
+							}, 350);
+						}
+					}
+				});
+				if(Layout.Lefter.CurrentNav.path.indexOf(item.path)>=0){
+					$(".layout .layout-lefter .active").removeClass("active");
+					$li.addClass("active");
+				}
+			});
+			$this.removeClass("out");
+		}, 350);
+	}
+	buildNav($(".layout .layout-lefter .toper"),Layout.Lefter.TopperNav);
+	buildNav($(".layout .layout-lefter .bottomer"),Layout.Lefter.BottomerNav);
+	Layout.Lefter.CurrentNav.callback();
+	
+	
+	$("#btn_layout").click(function(e) {
+		if ($(".layout").hasClass("in") || $(".layout .layout-lefter").width() > Layout.Lefter.minWidth) {
+			$(".layout").removeClass("in");
+			$(".layout").addClass("out");
+		} else {
+			$(".layout").removeClass("out");
+			$(".layout").addClass("in");
+		}
+	});
+
+});

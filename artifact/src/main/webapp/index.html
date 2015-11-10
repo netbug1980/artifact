@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bootstrap Template</title>
+<!-- Bootstrap -->
+<link href="base/css/bootstrap.css" rel="stylesheet" type="text/css">
+<!-- <link href="base/css/bootstrap-theme.css" rel="stylesheet" type="text/css"> -->
+<link href="base/less/layout.less" rel="stylesheet/less" type="text/css">
+<!-- Less  -->
+<script src="base/js/less.js" type="text/javascript"></script>
+<!-- jQuery  -->
+<script src="base/js/jquery.js" type="text/javascript"></script>
+<!-- Bootstrap  -->
+<script src="base/js/bootstrap.js" type="text/javascript"></script>
+<script src="base/js/layout.js" type="text/javascript"></script>
+</head>
+<body>
+	<div class="layout">
+		<div class="layout-header ">
+			<div class="btn-group btn-group-lg" role="group" aria-label="...">
+				<button class="btn btn-danger" id="btn_layout" title="展开或关闭导航">
+					<span class="glyphicon glyphicon-menu-hamburger"></span>
+				</button>
+				<button class="btn btn-default invisible " id="btn_nav_back" title="返回一级导航">
+					<span class="glyphicon glyphicon-menu-left"></span>
+				</button>
+			</div>
+			<span class="title"> 线索库</span>
+			<div class="pull-right">
+				<div class="btn-group btn-group-lg">
+					<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+						<span class="glyphicon glyphicon-plus"></span>
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu pull-right">
+						<li>
+							<a href="#">
+								<span class="glyphicon glyphicon-th-list"></span>
+								<font class="add-title"> 线索</font>
+							</a>
+						</li>
+						<li>
+							<a href="#">
+								<span class="glyphicon glyphicon-inbox"></span>
+								<font class="add-title"> 选题</font>
+							</a>
+						</li>
+						<li>
+							<a href="#">
+								<span class="glyphicon glyphicon-film"></span>
+								<font class="add-title"> 报道</font>
+							</a>
+						</li>
+						<!-- <li role="separator" class="divider"></li> -->
+					</ul>
+				</div>
+				<input type="text" class="form-control hidden-xs" placeholder="Search for...">
+				<button class="btn btn-default btn-lg">
+					<span class="glyphicon glyphicon-search"></span>
+				</button>
+			</div>
+		</div>
+		<div class="layout-lefter ">
+			<ul class="toper list-unstyled">
+				
+			</ul>
+			<ul class="bottomer list-unstyled">
+				
+			</ul>
+		</div>
+		<div class="layout-container in">
+			<div class="content in container-fluid">
+				<!-- Nav tabs -->
+				<ul class="nav nav-tabs " role="tablist">
+					<li role="presentation" class="active">
+						<a href="#home" aria-controls="home" role="tab" data-toggle="tab">线索库</a>
+					</li>
+					<li role="presentation">
+						<a href="#profile" aria-controls="profile" role="tab" data-toggle="tab">选题库</a>
+					</li>
+					<li role="presentation">
+						<a href="#messages" aria-controls="messages" role="tab" data-toggle="tab">报道库</a>
+					</li>
+					<li role="presentation">
+						<a href="#settings" aria-controls="settings" role="tab" data-toggle="tab">素材库</a>
+					</li>
+				</ul>
+				<!-- Tab panes -->
+				<div class="tab-content">
+					<div role="tabpanel" class="tab-pane fade in active" id="home">1...</div>
+					<div role="tabpanel" class="tab-pane fade " id="profile">2...</div>
+					<div role="tabpanel" class="tab-pane fade " id="messages">3...</div>
+					<div role="tabpanel" class="tab-pane fade " id="settings">4...</div>
+				</div>
+			</div>
+		</div>
+		<div class="layout-footer "></div>
+	</div>
+</body>
+</html>
