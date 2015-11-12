@@ -14,7 +14,7 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("导航11");
+							console.log("导航11");
 						}
 					}, {
 						title : "导航12",
@@ -22,7 +22,7 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("导航12");
+							console.log("导航12");
 						}
 					}, {
 						title : "导航13",
@@ -30,11 +30,11 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("导航13");
+							console.log("导航13");
 						}
 					}],
 					callback : function() {
-						alert("导航1");
+						console.log("导航1");
 					}
 				}, {
 					title : "导航2",
@@ -46,7 +46,7 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("导航21");
+							console.log("导航21");
 						}
 					}, {
 						title : "导航22",
@@ -54,11 +54,11 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("导航22");
+							console.log("导航22");
 						}
 					}],
 					callback : function() {
-						alert("导航2");
+						console.log("导航2");
 					}
 				}, {
 					title : "导航3",
@@ -66,7 +66,7 @@ $(function() {
 					count:0,
 					childNav : [],
 					callback : function() {
-						alert("导航3");
+						console.log("导航3");
 					}
 				}, {
 					title : "导航4",
@@ -74,7 +74,7 @@ $(function() {
 					count:0,
 					childNav : [],
 					callback : function() {
-						alert("导航4");
+						console.log("导航4");
 					}
 				}],
 				BottomerNav : [{
@@ -87,7 +87,7 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("个人信息");
+							console.log("个人信息");
 						}
 					}, {
 						title : "注销",
@@ -95,7 +95,16 @@ $(function() {
 						count:0,
 						childNav : [],
 						callback : function() {
-							alert("注销");
+							console.log("注销");
+							$("#singleModal").modal("show");
+							$("#btn_login").unbind();
+							$("#btn_login").click(function(){
+								var username = $('#singleModal form input[name="username"]').val().trim();
+								var password = $('#singleModal form input[name="password"]').val().trim();
+								Proxy.login({username:username,password:password}, function(){
+									
+								});
+							});
 						}
 					}],
 					callback : function() {
@@ -107,7 +116,7 @@ $(function() {
 					count:0,
 					childNav : [],
 					callback : function() {
-						alert("设置");
+						console.log("设置");
 					}
 				}],
 			}
@@ -174,12 +183,12 @@ $(function() {
 							Layout.Lefter.CurrentNav = item;
 							$(".layout .layout-lefter .active").removeClass("active");
 							$(this).addClass("active");
-							$(".layout-container").removeClass("in out");
-							setTimeout(function(){
-								$(".layout-container").addClass("in");
-								item.callback();
-							}, 350);
 						}
+						$(".layout-container").removeClass("in out");
+						setTimeout(function(){
+							$(".layout-container").addClass("in");
+							item.callback();
+						}, 350);
 					}
 				});
 				if(Layout.Lefter.CurrentNav.path.indexOf(item.path)>=0){
@@ -196,13 +205,21 @@ $(function() {
 	
 	
 	$("#btn_layout").click(function(e) {
-		if ($(".layout").hasClass("in") || $(".layout .layout-lefter").width() > Layout.Lefter.minWidth) {
-			$(".layout").removeClass("in");
-			$(".layout").addClass("out");
-		} else {
-			$(".layout").removeClass("out");
-			$(".layout").addClass("in");
+		if(!$(".layout").hasClass("in")&&!$(".layout").hasClass("out")){
+			if($(window).width() >= 768){//大屏
+				$(".layout").addClass("out");
+			}else{//小屏
+				$(".layout").addClass("in");
+			}
+		}else{
+			if ($(".layout").hasClass("in")) {
+				$(".layout").removeClass("in");
+				$(".layout").addClass("out");
+			} else {
+				$(".layout").removeClass("out");
+				$(".layout").addClass("in");
+			}
 		}
 	});
-
+	console.log($(window).width());
 });
