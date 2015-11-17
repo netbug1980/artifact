@@ -30,9 +30,7 @@ public class LoginSuccessHandlerCsrfImpl implements LoginSuccessHandler {
 			CsrfToken csrfToken = (CsrfToken) request.getSession()
 					.getAttribute("CSRF_TOKEN");
 			if (csrfToken != null) {
-				result.put(
-						LoginSuccessHandlerCsrfImpl.class.getName().concat(
-								".CSRF_TOKEN"), csrfToken);
+				result.put("CSRF_TOKEN", csrfToken);
 			}
 		} catch (Exception e) {
 			logger.warn("登陆成功后返回CsrfToken的信息异常", e);

@@ -101,8 +101,27 @@ $(function() {
 							$("#btn_login").click(function(){
 								var username = $('#singleModal form input[name="username"]').val().trim();
 								var password = $('#singleModal form input[name="password"]').val().trim();
-								Proxy.login({username:username,password:password}, function(){
-									
+								Proxy.login({username:username,password:password}, function(response){
+									switch (response.code) {
+										case 0 :{
+											$("#singleModal").modal("hide");
+											break;
+										}
+										case -2 :{
+											Message.danger(response.message);
+											break;
+										}
+										case -20 :{
+											Message.danger(response.message);
+											break;
+										}
+										case -21 :{
+											Message.danger(response.message);
+											break;
+										}
+										default :
+											break;
+									}
 								});
 							});
 						}
@@ -148,7 +167,7 @@ $(function() {
 				var $li = $("<li>").appendTo($this);
 				var $a = $("<a>").attr("href","#").appendTo($li);
 				item.icon = item.icon.trim()?item.icon:"glyphicon glyphicon-question-sign";
-				$("<span>").addClass(item.icon).appendTo($a);
+				$("<span>").addClass(item.icon).addClass("margin-right-15").appendTo($a);
 				var $detail = $("<span>").addClass("detail").appendTo($a);
 				$("<span>").addClass("title").text(item.title).appendTo($detail);
 				var $title_ext = $("<span>").addClass("title-ext").appendTo($detail);
@@ -168,12 +187,14 @@ $(function() {
 					if(item.childNav.length>0){
 						
 						buildNav($this,item.childNav);//创建二级菜单
-						Layout.Lefter.BackStack.push({$this:$this,nav:nav});
+						Layout.Lefter.BackStack.push(function(){
+							buildNav($this,nav);
+						});
 						$("#btn_nav_back").removeClass("invisible");
 						$("#btn_nav_back").unbind();
 						$("#btn_nav_back").click(function(){
-							var temp = Layout.Lefter.BackStack.pop();
-							buildNav(temp.$this,temp.nav);//恢复一级菜单
+							var backFun = Layout.Lefter.BackStack.pop();
+							backFun();//恢复一级菜单
 							if(Layout.Lefter.BackStack.length==0){
 								$("#btn_nav_back").addClass("invisible");
 							}

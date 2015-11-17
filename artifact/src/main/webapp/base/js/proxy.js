@@ -1,22 +1,24 @@
 var Proxy = {
 	project : '/artifact',
-	login: function(user, callback){
-		$.ajax({
-			url		: Proxy.project+'/login',
-			type	: 'POST',
-			async	: true,
-			contentType : 'application/json; charset=UTF-8',
-			dataType: 'json',
-			data	: JSON.stringify(user),
-			success	: function(response){
+	ajaxStack : new Array(),
+	login : function(user, callback) {
+		new AjaxProxy({
+			url : Proxy.project + '/login',
+			type : 'POST',
+			data : JSON.stringify(user),
+//			$loadingContainer:$('#singleModal .modal-body'),
+			callback : function(response) {
 				switch (response.code) {
-					case 0 :{
-						sessionStorage.currentSession = JSON.stringify(response.result);
-						break;
+					case 0 : {
+						sessionStorage.currentSession = JSON
+								.stringify(response.result);
+						//还原之前需要登录的请求
+						while(Proxy.ajaxStack.length>0){
+							Proxy.ajaxStack.pop().start();
+						}
 					}
-						
-					default :{
-						
+					default : {
+						callback(response);
 						break;
 					}
 				}
@@ -25,96 +27,203 @@ var Proxy = {
 	}
 };
 
-$.ajaxSetup({
-	beforeSend: function(jqXHR, settings) {
-		try {
-			var session = sessionStorage.currentSession;
-			if(!!session) {
-				session = JSON.parse(session);
-				var CsrfToken = session["org.artifact.security.intercept.LoginSuccessHandlerCsrfImpl.CSRF_TOKEN"];
-				if(!!CsrfToken){
-					jqXHR.setRequestHeader(CsrfToken.headerName, CsrfToken.token);
+function AjaxProxy(options) {
+	this.defaults = {
+		url : '',
+		type : 'POST',
+		async : true,
+		contentType : 'application/json; charset=UTF-8',
+		dataType : 'json',
+		timeout : 5000,
+		data : null,
+		$loadingContainer : $('.layout-message'),
+		callback : function(response) {
+			
+		}
+	};
+	this.options = $.extend({}, this.defaults, options);
+	var obj = this;
+	var $loadingContainer = obj.options.$loadingContainer;
+	var uuid = Math.uuid();
+	this.options.xhr = function() {
+		/* 创建增强了得XMLHttpRequest对象 */
+		var xhr = null;
+		if (window.ActiveXObject) {
+			xhr = new ActiveXObject("Microsoft.XMLHTTP");
+		} else if (window.XMLHttpRequest) {
+			xhr = new XMLHttpRequest();
+		}
+		$loadingContainer.Loading(uuid);// Loading初始化
+		var percent = 21;
+		var intervalId = null;
+		var timeoutId1 = null;
+		var timeoutId2 = null;
+		xhr.onreadystatechange = function() {
+			switch (xhr.readyState) {
+				case 0 : { // (未初始化)：(XMLHttpRequest)对象已经创建，但还没有调用open()方法。
+					$loadingContainer.progress(uuid, "0%");
+					break;
 				}
-				jqXHR.setRequestHeader('Accept', 'application/json');
-//				jqXHR.setRequestHeader('sessionID', session.sessionID);
-//				jqXHR.setRequestHeader('userID', session.userID);
-//				jqXHR.setRequestHeader('userName', encodeURIComponent(session.userName));
-				return true;
-			} else {
-				Message.show('本地会话为空，你还没有登录吧？请求就不发给服务端啦！', {cls : 'warning', closable: true});
-				return false;
+				case 1 : { // （载入）已调用send()方法，正在发送请求
+					$loadingContainer.progress(uuid, "20%");
+					intervalId = setInterval(function(){
+						$loadingContainer.progress(uuid, percent+"%");
+						percent = percent + 1;
+					},parseInt(obj.options.timeout/60));
+					timeoutId1 = setTimeout(function(){
+						$loadingContainer.warning(uuid);
+					},parseInt(obj.options.timeout*0.8));
+					timeoutId2 = setTimeout(function(){
+						window.clearInterval(intervalId);
+					},obj.options.timeout);
+					break;
+				}
+				case 2 : { // （载入完成）send()方法执行完成，已经接收到全部响应内容
+					window.clearInterval(intervalId);
+					window.clearTimeout(timeoutId1);
+					window.clearTimeout(timeoutId2);
+					$loadingContainer.progress(uuid, "80%");
+					break;
+				}
+				case 3 : { // 正在解析响应内容
+					$loadingContainer.progress(uuid, "90%");
+					break;
+				}
+				case 4 : { // 响应内容解析完成，可以在客户端调用了
+					$loadingContainer.progress(uuid, "100%");
+					break;
+				}
+				default :
+					break;
 			}
-		} catch(e) {
-			Message.show('解析本地会话出错啦，请求发不到服务端啦，刷新下试试吧', {cls : 'danger', closable: true});
-			return false;
-		}
-	},
-//	jqXHR.readyState
-//	0 (未初始化)： (XMLHttpRequest)对象已经创建，但还没有调用open()方法。
-//	1 (载入)：已经调用open() 方法，但尚未发送请求。
-//	2 (载入完成)： 请求已经发送完成。
-//	3 (交互)：可以接收到部分响应数据。
-//	4 (完成)：已经接收到了全部数据，并且连接已经关闭。
-	error : function(jqXHR, textStatus, errorThrown) {
-		if(jqXHR.status === 403) {
-			if(jqXHR.getResponseHeader('Location')) {
-				top.location.href = jqXHR.getResponseHeader('Location');
-			} else {
-				Message.danger('会话过期啦，要重新登录哦');
-				Proxy.showLogin();
+		};
+		return xhr;
+	};
+	this.options.complete = function(xhr, text) {
+		setTimeout(function() {
+			$loadingContainer.removeLoading(uuid);
+		}, 1000);
+	};
+	this.options.success = function(response) {
+		$loadingContainer.success(uuid);
+		switch (response.code) {
+			case -1 : {//服务器错误
+				Message.danger(response.message);
+				break;
 			}
-			return;
+			case -22 : {//没有登录
+				Proxy.ajaxStack.push(obj);
+				Message.danger(response.message);
+				break;
+			}
+			case -30 : {//Session失效
+				Message.danger(response.message);
+				break;
+			}
+			case -31 : {//Session过期，您已在别处登陆
+				Message.danger(response.message);
+				break;
+			}
+			case -40 : {//权限拒绝
+				Message.danger(response.message);
+				break;
+			}
+			case -41 : {//CSRF
+				Message.danger(response.message);
+				break;
+			}
+			default : {
+				obj.options.callback(response);
+				break;
+			}
 		}
-		switch(textStatus) {
-		case null:
-			// 这种情况还未遇到过
-			errorThrown = (errorThrown == '') ? 'jQuery.ajax返回的错误状态值是null，我们也不知道发生了什么' : errorThrown;
-			Message.show('出错啦:' + errorThrown,
-					{cls : 'danger', closable: true});
-			break;
-		case "timeout":
-			Message.show('啊哦，连接超时啦，呆会再试试吧', {cls : 'warning'});
-			break;
-		case "error":
-			// 'Not Found'基本不会发生，除非请求地址写错了
-			// 'Internal Server Error'基本不会发生，除非服务端Controller没catch Throwable
-			if(errorThrown === 'Not Found' || errorThrown === 'Internal Server Error') {
+	};
+	this.options.error = function(jqXHR, textStatus, errorThrown) {
+		$loadingContainer.danger(uuid);
+		switch (textStatus) {
+			case null :
+				// 这种情况还未遇到过
+				errorThrown = (errorThrown == '')
+						? 'jQuery.ajax返回的错误状态值是null，我们也不知道发生了什么'
+						: errorThrown;
+				Message.danger('出错啦:' + errorThrown);
+				break;
+			case "timeout" :
+				Message.danger('啊哦，连接超时啦，呆会再试试吧');
+				break;
+			case "error" :
+				// 'Not Found'基本不会发生，除非请求地址写错了
+				// 'Internal Server Error'基本不会发生，除非服务端Controller没catch
+				// Throwable
+				if (errorThrown === 'Not Found'
+						|| errorThrown === 'Internal Server Error') {
+					// NO-OP
+				} else if (jqXHR.readyState === 0) {
+					Message
+							.danger('请求没成功，可能的错误有：1.失去网络连接,2.域名解析错误啦,3.跨域访问了,4.请求建立超时了');
+				} else {
+					errorThrown = (errorThrown == '')
+							? 'sorry, jQuery也没有给提示信息'
+							: errorThrown;
+					Message.danger('出现了未知错误:' + errorThrown);
+				}
+				break;
+			case "abort" :
 				// NO-OP
-			} else if(jqXHR.readyState === 0) {
-				Message.show('请求没成功，可能的错误有：1.失去网络连接,2.域名解析错误啦,3.跨域访问了,4.请求建立超时了',
-						{cls : 'danger', closable: true});
-			} else {
-				errorThrown = (errorThrown == '') ? 'sorry, jQuery也没有给提示信息' : errorThrown;
-				Message.show('出现了未知错误:' + errorThrown, {cls : 'danger', closable: true});
+				Message.warning('客户端取消');
+				break;
+			case "parsererror" :
+				Message.danger('啊哦，返回的数据解析不了啦，找程序员吧');
+				break;
+		}
+	};
+	this.start = function(){
+		$.ajax(obj.options);
+	};
+	this.start();
+}
+
+$.ajaxSetup({
+			beforeSend : function(jqXHR, settings) {
+				var session = sessionStorage.currentSession;
+				if (!!session) {
+					session = JSON.parse(session);
+					var CsrfToken = session["CSRF_TOKEN"];
+					if (!!CsrfToken) {
+						jqXHR.setRequestHeader(CsrfToken.headerName,
+								CsrfToken.token);
+					}
+					jqXHR.setRequestHeader('Accept', 'application/json');
+					// jqXHR.setRequestHeader('sessionID', session.sessionID);
+					// jqXHR.setRequestHeader('userID', session.userID);
+					// jqXHR.setRequestHeader('userName',
+					// encodeURIComponent(session.userName));
+
+				}
+				return true;
+			},
+			statusCode : {
+				// statusCode
+				// 100——客户必须继续发出请求
+				// 101——客户要求服务器根据请求转换HTTP协议版本
+				//
+				// 200——成功
+				// 201——提示知道新文件的URL
+				//
+				// 300——请求的资源可在多处得到
+				// 301——删除请求数据
+				//
+				// 404——没有发现文件、查询或URl
+				// 500——服务器产生内部错误
+				403 : function() {
+					Message.danger('会话过期啦，要重新登录哦');
+				},
+				404 : function() {
+					Message.danger('后台请求的地址不对哦');
+				},
+				500 : function() {
+					Message.danger('后台服务出错啦，联系网络运维人员吧');
+				}
 			}
-			break;
-		case "abort":
-			// NO-OP
-			// Message.show('客户端取消', {cls : 'danger'});
-			break;
-		case "parsererror":
-			Message.show('啊哦，返回的数据解析不了啦，找程序员吧', {cls : 'danger'});
-			break;
-		}
-	},
-//	statusCode
-//	100——客户必须继续发出请求
-//	101——客户要求服务器根据请求转换HTTP协议版本
-//
-//	200——成功
-//	201——提示知道新文件的URL
-//
-//	300——请求的资源可在多处得到
-//	301——删除请求数据
-//
-//	404——没有发现文件、查询或URl
-//	500——服务器产生内部错误
-	statusCode : {
-		404 : function() {
-			Message.show('后台请求的地址不对哦', {cls : 'danger', closable: true});
-		},
-		500 : function() {
-			Message.show('后台服务出错啦，联系网络运维人员吧', {cls : 'danger', closable: true});
-		}
-	}
-});
+
+		});

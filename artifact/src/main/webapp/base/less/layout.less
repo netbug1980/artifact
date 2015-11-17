@@ -3,6 +3,7 @@
 @layout-lefter-width: 255px;
 @layout-lefter-min-width: 50px;
 @layout-lefter-bg-color: #2B2B2B;
+@layout-content-header-height: 44px;
 @layout-footer-height: 0px;
 .layout {
 	.layout-header {
@@ -11,6 +12,7 @@
 		top: 0px;
 		width: 100%;
 		z-index: 1000;
+		white-space: nowrap;
 		.title {
 			font-family: "Microsoft YaHei" ! important;
 			font-size: 16px;
@@ -61,7 +63,6 @@
 					padding-left: 16px;
 					white-space: nowrap;
 					.detail {
-						margin-left: 15px;
 						.title {
 							font-family: "Microsoft YaHei" ! important;
 							width: 125px;
@@ -106,7 +107,6 @@
 
 		.toper.out {
 			right: 100%;
-			.layout-changing-left-right
 		}
 
 		.bottomer {
@@ -118,7 +118,6 @@
 
 		.bottomer.out {
 			right: 100%;
-			.layout-changing-left-right
 		}
 	}
 
@@ -127,105 +126,110 @@
 		margin-top: 1px;
 		top: @layout-header-height;
 		left: @layout-lefter-width;
-		bottom: @layout-footer-height;
-		right: 100%;
+		bottom: 100%;
+		right: 0px;
 		overflow: hidden;
 		.content {
 			position: absolute;
-			overflow-x: hidden;
-			overflow-y: auto;
+			overflow: hidden;
 			top: 0px;
 			bottom: 0px;
 			right: 0px;
 			left: 100%;
+			> div {
+				position: absolute;
+				margin-left: auto;
+				margin-right: auto;
+				padding-left: 15px;
+				padding-right: 15px;
+			}
+
+			> div:nth-child(2) {
+				top: @layout-content-header-height;
+			}
+
+			.content-header {
+				height: @layout-content-header-height;
+				line-height: @layout-content-header-height;
+				width: 100%;
+				white-space: nowrap;
+				background-color: #f5f5f5;
+				.btn-group {
+					top: 6px;
+				}
+			}
+
+			.content-container {
+				top: 0px;
+				bottom: 0px;
+				width: 100%;
+				overflow-x: hidden;
+				overflow-y: auto;
+				padding-top: 15px;
+			}
 		}
 
 		.content.out {
 			left: 100%;
-			.layout-changing-left-right
 		}
 
 		.content.in {
 			left: 0%;
-			.layout-changing-left-right
 		}
 	}
 
 	.layout-container.out {
-		right: 100%;
-		.layout-changing-left-right
+		top: 100%;
 	}
 
 	.layout-container.in {
-		right: 0%;
-		.layout-changing-left-right
+		bottom: @layout-footer-height;
 	}
-}
 
-.layout-changing-width {
-	-webkit-transition-property: width;
-	-o-transition-property: width;
-	transition-property: width;
-}
-
-.layout-changing-visibility {
-	-webkit-transition-property: visibility;
-	-o-transition-property: visibility;
-	transition-property: visibility;
-}
-
-.layout-changing-left {
-	-webkit-transition-property: left;
-	-o-transition-property: left;
-	transition-property: left;
-}
-
-.layout-changing-left-right {
-	-webkit-transition-property: left, right;
-	-o-transition-property: left, right;
-	transition-property: left, right;
+	.layout-message {
+		position: fixed;
+		top: 0px;
+		left: 50px;
+		right: 0px;
+		z-index: 1051;
+		.alert {
+			width: 50%;
+			margin: auto;
+		}
+	}
 }
 
 .layout {
 	.layout-lefter , .layout-lefter .detail , .layout-lefter .toper , .layout-lefter .bottomer , .layout-container , .layout-container .content {
-		-webkit-transition-timing-function: ease;
-		-o-transition-timing-function: ease;
-		transition-timing-function: ease;
-		-webkit-transition-duration: .35s;
-		-o-transition-duration: .35s;
-		transition-duration: .35s;
+		-webkit-transition: all .35s ease;
+		-o-transition: all .35s ease;
+		transition: all .35s ease;
 	}
 }
 
 .layout.in {
 	.layout-lefter {
 		width: @layout-lefter-width;
-		.layout-changing-width;
 		.detail {
 			visibility: visible;
-			.layout-changing-visibility;
 		}
 	}
 
 	.layout-container {
 		left: @layout-lefter-width;
-		.layout-changing-left-right
 	}
 }
 
 .layout.out {
 	.layout-lefter {
 		width: @layout-lefter-min-width;
-		.layout-changing-width;
 		.detail {
 			visibility: hidden;
-			.layout-changing-visibility;
 		}
 	}
 
 	.layout-container {
 		left: @layout-lefter-min-width;
-		.layout-changing-left-right
 	}
 }
 
@@ -243,23 +247,49 @@
 			.layout-container {
 				left: @layout-lefter-min-width;
 			}
+
+			.layout-message {
+				left: 0px;
+				.alert {
+					width: 100%;
+				}
+			}
 		}
 
 		.layout.in {
 			.layout-lefter {
 				width: @layout-lefter-width;
-				.layout-changing-width;
 				.detail {
 					visibility: visible;
-					.layout-changing-visibility;
 				}
 			}
 
 			.layout-container {
 				left: @layout-lefter-min-width;
-				.layout-changing-left-right
 			}
 		}
 	}
+}
+
+.margin-right-15 {
+	margin-right: 15px;
+}
+
+.panel-title {
+	display: inline-block;
+	height: 28px;
+	line-height: 28px;
+}
+
+.progress.loading {
+	height: 5px;
+	margin-bottom: 0px;
+	background-color: transparent;
+	border-radius: 0px;
+}
+
+.organication .breadcrumb {
+	margin-bottom: 0px;
+	display: inline;
 }
 
