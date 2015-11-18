@@ -82,20 +82,12 @@ $(function() {
 					icon : "",
 					count:0,
 					childNav : [{
-						title : "个人信息",
+						title : "登陆",
 						icon : "",
 						count:0,
 						childNav : [],
 						callback : function() {
-							console.log("个人信息");
-						}
-					}, {
-						title : "注销",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("注销");
+							console.log("登陆");
 							$("#singleModal").modal("show");
 							$("#btn_login").unbind();
 							$("#btn_login").click(function(){
@@ -123,6 +115,25 @@ $(function() {
 											break;
 									}
 								});
+							});
+						}
+					}, {
+						title : "注销",
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							console.log("注销");
+							Proxy.logout(function(res){
+								switch (res.code) {
+									case 0 :{
+										Message.success(res.result);
+										break;
+									}
+
+									default :
+										break;
+								}
 							});
 						}
 					}],
@@ -243,4 +254,6 @@ $(function() {
 		}
 	});
 	console.log($(window).width());
+	Org.init();
+	Org.load(1);
 });

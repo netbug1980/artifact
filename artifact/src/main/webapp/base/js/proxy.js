@@ -1,9 +1,7 @@
 var Proxy = {
-	project : '/artifact',
-	ajaxStack : new Array(),
 	login : function(user, callback) {
 		new AjaxProxy({
-			url : Proxy.project + '/login',
+			url : '/login',
 			type : 'POST',
 			data : JSON.stringify(user),
 //			$loadingContainer:$('#singleModal .modal-body'),
@@ -13,8 +11,8 @@ var Proxy = {
 						sessionStorage.currentSession = JSON
 								.stringify(response.result);
 						//还原之前需要登录的请求
-						while(Proxy.ajaxStack.length>0){
-							Proxy.ajaxStack.pop().start();
+						while(AjaxProxy.ajaxStack.length>0){
+							AjaxProxy.ajaxStack.pop().start();
 						}
 					}
 					default : {
@@ -24,9 +22,25 @@ var Proxy = {
 				}
 			}
 		});
+	},
+	logout : function(callback) {
+		new AjaxProxy({
+			url : '/logout',
+			type : 'POST',
+//			$loadingContainer:$('#singleModal .modal-body'),
+			callback : callback
+		});
+	},
+	getOrg : function(orgID,callback){
+		new AjaxProxy({
+			url:'/api/security/organization/get/'+orgID,
+			type:'GET',
+			callback:callback
+		});
 	}
 };
-
+AjaxProxy.project = '/artifact';
+AjaxProxy.ajaxStack = new Array();
 function AjaxProxy(options) {
 	this.defaults = {
 		url : '',
@@ -44,7 +58,8 @@ function AjaxProxy(options) {
 	this.options = $.extend({}, this.defaults, options);
 	var obj = this;
 	var $loadingContainer = obj.options.$loadingContainer;
-	var uuid = Math.uuid();
+	var uuid = $loadingContainer.getUID('loading');
+	this.options.url = AjaxProxy.project + this.options.url;
 	this.options.xhr = function() {
 		/* 创建增强了得XMLHttpRequest对象 */
 		var xhr = null;
@@ -102,7 +117,7 @@ function AjaxProxy(options) {
 	this.options.complete = function(xhr, text) {
 		setTimeout(function() {
 			$loadingContainer.removeLoading(uuid);
-		}, 1000);
+		}, 600);
 	};
 	this.options.success = function(response) {
 		$loadingContainer.success(uuid);
@@ -112,7 +127,7 @@ function AjaxProxy(options) {
 				break;
 			}
 			case -22 : {//没有登录
-				Proxy.ajaxStack.push(obj);
+				AjaxProxy.ajaxStack.push(obj);
 				Message.danger(response.message);
 				break;
 			}
