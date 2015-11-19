@@ -34,6 +34,7 @@ public class Organization extends IdEntity {
 	private String fullPath;// 全路径
 	@JsonIgnoreProperties(value = { "childOrgList", "userList" })
 	private Organization parentOrg;// 上级部门
+	@JsonIgnoreProperties(value = { "childOrgList", "userList" })
 	private List<Organization> childOrgList;// 下级部门
 	@JsonIgnoreProperties(value = { "organization" })
 	private List<User> userList;

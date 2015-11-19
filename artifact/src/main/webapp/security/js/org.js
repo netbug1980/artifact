@@ -15,8 +15,8 @@ var Org = {
 			Org.$userPanel = $(Org.panelDemo).addClass('panel-user').appendTo(Org.$container);
 			Org.$userPanel.find('.panel-title').text('用户');
 		},
-		load:function(orgID){
-			Proxy.getOrg(orgID, function(res){
+		load:function(orgID,cache){
+			Proxy.getOrg(orgID,cache, function(res){
 				var org = res.result;
 				//部门路径导航
 				Org.buildNav(org);
@@ -34,7 +34,7 @@ var Org = {
 				var $li = $('<li id="'+org.id+'"><a href="#">'+org.name+'</a></li>').appendTo(Org.$nav);
 				$li.click(function(){
 					var orgID = $(this).attr('id');
-					Org.load(orgID);
+					Org.load(orgID,true);
 				});
 			}
 		},
@@ -49,7 +49,7 @@ var Org = {
 			});
 			$tbody.find('a').click(function(){
 				var orgID = $(this).attr('id');
-				Org.load(orgID);
+				Org.load(orgID,false);
 			});
 		},
 		buildUser:function(list){

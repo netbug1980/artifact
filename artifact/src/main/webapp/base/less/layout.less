@@ -1,6 +1,6 @@
 @theme-color: #5d9cec;
 @layout-header-height: 44px;
-@layout-lefter-width: 255px;
+@layout-lefter-width: 250px;
 @layout-lefter-min-width: 50px;
 @layout-lefter-bg-color: #2B2B2B;
 @layout-content-header-height: 44px;
@@ -254,7 +254,7 @@
 	@media (max-width: 768px) {
 		.layout {
 			.layout-lefter {
-				width: @layout-lefter-min-width;
+				width: 0px;
 				z-index: 1000;
 				.detail {
 					visibility: hidden;
@@ -262,7 +262,7 @@
 			}
 
 			.layout-container {
-				left: @layout-lefter-min-width;
+				left: 0px;
 			}
 
 			.layout-message {
@@ -282,7 +282,20 @@
 			}
 
 			.layout-container {
-				left: @layout-lefter-min-width;
+				left: 0px;
+			}
+		}
+
+		.layout.out {
+			.layout-lefter {
+				width: 0px;
+				.detail {
+					visibility: hidden;
+				}
+			}
+
+			.layout-container {
+				left: 0px;
 			}
 		}
 

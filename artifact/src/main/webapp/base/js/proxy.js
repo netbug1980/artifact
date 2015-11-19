@@ -31,10 +31,11 @@ var Proxy = {
 			callback : callback
 		});
 	},
-	getOrg : function(orgID,callback){
+	getOrg : function(orgID,cache,callback){
 		new AjaxProxy({
 			url:'/api/security/organization/get/'+orgID,
 			type:'GET',
+			cache:cache,
 			callback:callback
 		});
 	}
@@ -46,6 +47,7 @@ function AjaxProxy(options) {
 		url : '',
 		type : 'POST',
 		async : true,
+		cache : false,
 		contentType : 'application/json; charset=UTF-8',
 		dataType : 'json',
 		timeout : 5000,
@@ -215,6 +217,7 @@ $.ajaxSetup({
 					// encodeURIComponent(session.userName));
 
 				}
+				jqXHR.setRequestHeader('Cache-Control', 'public');
 				return true;
 			},
 			statusCode : {
