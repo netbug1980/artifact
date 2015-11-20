@@ -50,7 +50,7 @@ function AjaxProxy(options) {
 		cache : false,
 		contentType : 'application/json; charset=UTF-8',
 		dataType : 'json',
-		timeout : 5000,
+		timeout : 8000,
 		data : null,
 		$loadingContainer : $('.layout-message'),
 		callback : function(response) {

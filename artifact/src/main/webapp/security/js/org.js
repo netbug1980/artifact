@@ -12,8 +12,28 @@ var Org = {
 			$('<div role="group" class="btn-group pull-right">').appendTo(Org.$nav);
 			Org.$orgPanel = $(Org.panelDemo).addClass('panel-org').appendTo(Org.$container);
 			Org.$orgPanel.find('.panel-title').text('部门');
+			Org.$orgPanel.find('.btn-group').Buttons([{
+				clazz:'btn-primary',
+				glyphicon:'glyphicon-plus',
+				text:'部门',
+				title:'新增子部门',
+				data:{},
+				callback:function(){
+					
+				}
+			}]);
 			Org.$userPanel = $(Org.panelDemo).addClass('panel-user').appendTo(Org.$container);
 			Org.$userPanel.find('.panel-title').text('用户');
+			Org.$userPanel.find('.btn-group').Buttons([{
+				clazz:'btn-primary',
+				glyphicon:'glyphicon-plus',
+				text:'用户',
+				title:'新增用户',
+				data:{},
+				callback:function(){
+					
+				}
+			}]);
 		},
 		load:function(orgID,cache){
 			Proxy.getOrg(orgID,cache, function(res){
@@ -45,9 +65,28 @@ var Org = {
 				return ;
 			}
 			$(list).each(function(i,item){
-				$('<tr><td><a href="#" id="'+item.id+'">'+item.name+'</a></td><td>操作</td></tr>').appendTo($tbody);
+				var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.name+'</a></td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
+				$tr.find('.btn-group').Buttons([{
+					clazz:'btn-link',
+					glyphicon:'glyphicon-edit',
+					text:'部门',
+					title:'修改部门',
+					data:{id:item.id},
+					callback:function(){
+						
+					}
+				},{
+					clazz:'btn-danger',
+					glyphicon:'glyphicon-remove',
+					text:'部门',
+					title:'删除部门',
+					data:{id:item.id},
+					callback:function(){
+						
+					}
+				}]);
 			});
-			$tbody.find('a').click(function(){
+			$tbody.find('a[id]').click(function(){
 				var orgID = $(this).attr('id');
 				Org.load(orgID,false);
 			});
@@ -59,7 +98,33 @@ var Org = {
 				return ;
 			}
 			$(list).each(function(i,item){
-				$('<tr><td><a href="#" id="'+item.id+'">'+item.account+'</a></td><td>'+item.name+'</td><td class="hidden-xs">'+item.age+'</td><td>操作</td></tr>').appendTo($tbody);
+				var roles = $(item.userRoleList).map(function(i,userRole){
+					if(i<3)
+						return userRole.role.name;
+				}).get().join(',');
+				if(item.userRoleList.length>3){
+					roles += '…';
+				}
+				var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.account+'</a></td><td>'+item.name+'</td><td class="hidden-xs">'+item.age+'</td><td class="hidden-xs">'+roles+'</td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
+				$tr.find('.btn-group').Buttons([{
+					clazz:'btn-link',
+					glyphicon:'glyphicon-edit',
+					text:'用户',
+					title:'修改用户',
+					data:{id:item.id},
+					callback:function(){
+						
+					}
+				},{
+					clazz:'btn-danger',
+					glyphicon:'glyphicon-remove',
+					text:'用户',
+					title:'删除用户',
+					data:{id:item.id},
+					callback:function(){
+						
+					}
+				}]);
 			});
 		},
 }
