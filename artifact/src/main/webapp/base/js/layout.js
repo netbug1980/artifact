@@ -1,156 +1,156 @@
-$(function() {
-	var Layout = {
-			Lefter : {
-				minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
-				CurrentNav : null,
-				BackStack : new Array(),//导航返回按钮栈
-				TopperNav : [{
-					title : "导航1",
-					icon : "",
-					count:0,
-					childNav : [{
-						title : "导航11",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("导航11");
-						}
-					}, {
-						title : "导航12",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("导航12");
-						}
-					}, {
-						title : "导航13",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("导航13");
-						}
-					}],
-					callback : function() {
-						console.log("导航1");
-					}
-				}, {
-					title : "导航2",
-					icon : "",
-					count:99,
-					childNav : [{
-						title : "导航21",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("导航21");
-						}
-					}, {
-						title : "导航22",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("导航22");
-						}
-					}],
-					callback : function() {
-						console.log("导航2");
-					}
-				}, {
-					title : "导航3",
+var Layout = {
+		Lefter : {
+			minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
+			CurrentNav : null,
+			BackStack : new Array(),//导航返回按钮栈
+			TopperNav : [{
+				title : "导航1",
+				icon : "",
+				count:0,
+				childNav : [{
+					title : "导航11",
 					icon : "",
 					count:0,
 					childNav : [],
 					callback : function() {
-						console.log("导航3");
+						console.log("导航11");
 					}
 				}, {
-					title : "导航4",
+					title : "导航12",
 					icon : "",
 					count:0,
 					childNav : [],
 					callback : function() {
-						console.log("导航4");
+						console.log("导航12");
+					}
+				}, {
+					title : "导航13",
+					icon : "",
+					count:0,
+					childNav : [],
+					callback : function() {
+						console.log("导航13");
 					}
 				}],
-				BottomerNav : [{
-					title : "付磊森",
+				callback : function() {
+					console.log("导航1");
+				}
+			}, {
+				title : "导航2",
+				icon : "",
+				count:99,
+				childNav : [{
+					title : "导航21",
 					icon : "",
 					count:0,
-					childNav : [{
-						title : "登陆",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("登陆");
-							$("#singleModal").modal("show");
-							$("#btn_login").unbind();
-							$("#btn_login").click(function(){
-								var username = $('#singleModal form input[name="username"]').val().trim();
-								var password = $('#singleModal form input[name="password"]').val().trim();
-								Proxy.login({username:username,password:password}, function(response){
-									switch (response.code) {
-										case 0 :{
-											$("#singleModal").modal("hide");
-											break;
-										}
-										case -2 :{
-											Message.danger(response.message);
-											break;
-										}
-										case -20 :{
-											Message.danger(response.message);
-											break;
-										}
-										case -21 :{
-											Message.danger(response.message);
-											break;
-										}
-										default :
-											break;
-									}
-								});
-							});
-						}
-					}, {
-						title : "注销",
-						icon : "",
-						count:0,
-						childNav : [],
-						callback : function() {
-							console.log("注销");
-							Proxy.logout(function(res){
-								switch (res.code) {
+					childNav : [],
+					callback : function() {
+						console.log("导航21");
+					}
+				}, {
+					title : "导航22",
+					icon : "",
+					count:0,
+					childNav : [],
+					callback : function() {
+						console.log("导航22");
+					}
+				}],
+				callback : function() {
+					console.log("导航2");
+				}
+			}, {
+				title : "导航3",
+				icon : "",
+				count:0,
+				childNav : [],
+				callback : function() {
+					console.log("导航3");
+				}
+			}, {
+				title : "导航4",
+				icon : "",
+				count:0,
+				childNav : [],
+				callback : function() {
+					console.log("导航4");
+				}
+			}],
+			BottomerNav : [{
+				title : "付磊森",
+				icon : "",
+				count:0,
+				childNav : [{
+					title : "登陆",
+					icon : "",
+					count:0,
+					childNav : [],
+					callback : function() {
+						console.log("登陆");
+						$("#singleModal").modal("show");
+						$("#btn_login").unbind();
+						$("#btn_login").click(function(){
+							var username = $('#singleModal form input[name="username"]').val().trim();
+							var password = $('#singleModal form input[name="password"]').val().trim();
+							Proxy.login({username:username,password:password}, function(response){
+								switch (response.code) {
 									case 0 :{
-										Message.success(res.result);
+										$("#singleModal").modal("hide");
 										break;
 									}
-
+									case -2 :{
+										Message.danger(response.message);
+										break;
+									}
+									case -20 :{
+										Message.danger(response.message);
+										break;
+									}
+									case -21 :{
+										Message.danger(response.message);
+										break;
+									}
 									default :
 										break;
 								}
 							});
-						}
-					}],
-					callback : function() {
-						
+						});
 					}
 				}, {
-					title : "设置",
+					title : "注销",
 					icon : "",
 					count:0,
 					childNav : [],
 					callback : function() {
-						console.log("设置");
+						console.log("注销");
+						Proxy.logout(function(res){
+							switch (res.code) {
+								case 0 :{
+									Message.success(res.result);
+									break;
+								}
+								
+								default :
+									break;
+							}
+						});
 					}
 				}],
-			}
-		};
+				callback : function() {
+					
+				}
+			}, {
+				title : "设置",
+				icon : "",
+				count:0,
+				childNav : [],
+				callback : function() {
+					console.log("设置");
+				}
+			}],
+		}
+};
+$(function() {
 	function flatNav(nav,path){
 		$(nav).each(function(i,item){
 			var temp = path;
@@ -202,14 +202,7 @@ $(function() {
 							buildNav($this,nav);
 						});
 						$("#btn_nav_back").removeClass("invisible");
-						$("#btn_nav_back").unbind();
-						$("#btn_nav_back").click(function(){
-							var backFun = Layout.Lefter.BackStack.pop();
-							backFun();//恢复一级菜单
-							if(Layout.Lefter.BackStack.length==0){
-								$("#btn_nav_back").addClass("invisible");
-							}
-						});
+						
 					}else{
 						if(!$(this).hasClass("active")){
 							Layout.Lefter.CurrentNav = item;
@@ -253,7 +246,19 @@ $(function() {
 			}
 		}
 	});
+	$("#btn_nav_back").click(function(){
+		var backFun = Layout.Lefter.BackStack.pop();
+		backFun();//恢复一级菜单
+		if(Layout.Lefter.BackStack.length==0){
+			$("#btn_nav_back").addClass("invisible");
+		}
+	});
 	console.log($(window).width());
+	var Org = new OrgContent({
+		hasHeader:true,
+		hasTitle:false,
+		hasBtnGroup:false
+	});
 	Org.init();
 	Org.load(1);
 });

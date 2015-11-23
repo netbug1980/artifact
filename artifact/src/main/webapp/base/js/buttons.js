@@ -34,7 +34,7 @@
 			$('<span>').addClass('glyphicon '+ item.glyphicon).appendTo($btn);
 			$btn.append(' '+item.text);
 			$btn.data('data',item.data);
-			$btn.click(item.callback());
+			$btn.click(item.callback);
 			return $btn;
 		};
 		this.buildLi = function($ul,item){
@@ -43,7 +43,7 @@
 			$('<span>').addClass('glyphicon '+ item.glyphicon).appendTo($a);
 			$('<font>').addClass('add-title').text(' '+item.text).appendTo($a);
 			$li.data('data',item.data);
-			$li.click(item.callback());
+			$li.click(item.callback);
 			return $li;
 		};
 		if(buttons instanceof Array){

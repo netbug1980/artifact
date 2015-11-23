@@ -38,6 +38,14 @@ var Proxy = {
 			cache:cache,
 			callback:callback
 		});
+	},
+	saveOrUpdateOrg : function(param,callback){
+		new AjaxProxy({
+			url:'/api/security/organization/saveorupdate',
+			type:'POST',
+			data:JSON.stringify(param),
+			callback:callback
+		});
 	}
 };
 AjaxProxy.project = '/artifact';
@@ -134,6 +142,7 @@ function AjaxProxy(options) {
 				break;
 			}
 			case -30 : {//Session失效
+				AjaxProxy.ajaxStack.push(obj);
 				Message.danger(response.message);
 				break;
 			}
