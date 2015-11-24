@@ -31,11 +31,10 @@ var Proxy = {
 			callback : callback
 		});
 	},
-	getOrg : function(orgID,cache,callback){
+	getOrg : function(orgID,callback){
 		new AjaxProxy({
 			url:'/api/security/organization/get/'+orgID,
 			type:'GET',
-			cache:cache,
 			callback:callback
 		});
 	},
@@ -49,7 +48,8 @@ var Proxy = {
 	}
 };
 AjaxProxy.project = '/artifact';
-AjaxProxy.ajaxStack = new Array();
+AjaxProxy.ajaxStack = new Array();//登陆成功后继续执行被拦截的操作
+AjaxProxy.ajaxMap = new Object();//避免重复提交
 function AjaxProxy(options) {
 	this.defaults = {
 		url : '',
@@ -58,7 +58,7 @@ function AjaxProxy(options) {
 		cache : false,
 		contentType : 'application/json; charset=UTF-8',
 		dataType : 'json',
-		timeout : 8000,
+		timeout : 20000,
 		data : null,
 		$loadingContainer : $('.layout-message'),
 		callback : function(response) {
@@ -67,6 +67,15 @@ function AjaxProxy(options) {
 	};
 	this.options = $.extend({}, this.defaults, options);
 	var obj = this;
+	function calMd5(options){
+		var temp = {
+				url : options.url,
+				type : options.type,
+				data : options.data
+		};
+		return $.md5(JSON.stringify(temp));
+	}
+	this.key = calMd5(this.options);
 	var $loadingContainer = obj.options.$loadingContainer;
 	var uuid = $loadingContainer.getUID('loading');
 	this.options.url = AjaxProxy.project + this.options.url;
@@ -126,6 +135,7 @@ function AjaxProxy(options) {
 	};
 	this.options.complete = function(xhr, text) {
 		setTimeout(function() {
+			delete AjaxProxy.ajaxMap[obj.key];
 			$loadingContainer.removeLoading(uuid);
 		}, 600);
 	};
@@ -204,6 +214,12 @@ function AjaxProxy(options) {
 		}
 	};
 	this.start = function(){
+		if(AjaxProxy.ajaxMap[obj.key]){
+			Message.info('请勿重复提交');
+			return;
+		}else{
+			AjaxProxy.ajaxMap[obj.key] = obj;
+		}
 		$.ajax(obj.options);
 	};
 	this.start();

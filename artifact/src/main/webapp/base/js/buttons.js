@@ -19,7 +19,7 @@
 	function Buttons($container,buttons){
 		var obj = this;
 		this.buttonDemo = {
-				clazz:'btn-primary',
+				clazz:'btn-info',
 				glyphicon:'glyphicon-question-sign',
 				text:'',
 				title:'',

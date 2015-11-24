@@ -3,6 +3,13 @@ var Layout = {
 			minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
 			CurrentNav : null,
 			BackStack : new Array(),//导航返回按钮栈
+			BackFun:function(flag){
+				var backFun = Layout.Lefter.BackStack.pop();
+			if(flag){	backFun();}//恢复一级菜单
+				if(Layout.Lefter.BackStack.length==0){
+					$("#btn_nav_back").addClass("invisible");
+				}
+			},
 			TopperNav : [{
 				title : "导航1",
 				icon : "",
@@ -247,11 +254,7 @@ $(function() {
 		}
 	});
 	$("#btn_nav_back").click(function(){
-		var backFun = Layout.Lefter.BackStack.pop();
-		backFun();//恢复一级菜单
-		if(Layout.Lefter.BackStack.length==0){
-			$("#btn_nav_back").addClass("invisible");
-		}
+		Layout.Lefter.BackFun(true);
 	});
 	console.log($(window).width());
 	var Org = new OrgContent({

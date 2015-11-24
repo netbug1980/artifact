@@ -10,7 +10,7 @@ function OrgContent(options){
 		this.$orgPanel = $(this.panelDemo).addClass('panel-org').appendTo(this.$container);
 		this.$orgPanel.find('.panel-title').text('部门');
 		this.$orgPanel.find('.btn-group').Buttons([{
-			clazz:'btn-primary',
+			clazz:'btn-info',
 			glyphicon:'glyphicon-plus',
 			text:'部门',
 			title:'新增子部门',
@@ -26,7 +26,7 @@ function OrgContent(options){
 		this.$userPanel = $(this.panelDemo).addClass('panel-user').appendTo(this.$container);
 		this.$userPanel.find('.panel-title').text('用户');
 		this.$userPanel.find('.btn-group').Buttons([{
-			clazz:'btn-primary',
+			clazz:'btn-info',
 			glyphicon:'glyphicon-plus',
 			text:'用户',
 			title:'新增用户',
@@ -36,9 +36,9 @@ function OrgContent(options){
 			}
 		}]);
 	};
-	this.load=function(orgID,cache){
+	this.load=function(orgID){
 		var obj = this;
-		Proxy.getOrg(orgID,cache, function(res){
+		Proxy.getOrg(orgID, function(res){
 			var org = res.result;
 			//部门路径导航
 			obj.buildNav(org);
@@ -58,7 +58,7 @@ function OrgContent(options){
 			var $li = $('<li id="'+org.id+'"><a href="#">'+org.name+'</a></li>').appendTo(this.$nav);
 			$li.click(function(){
 				var orgID = $(this).attr('id');
-				obj.load(orgID,true);
+				obj.load(orgID);
 			});
 		}
 	};
@@ -72,7 +72,7 @@ function OrgContent(options){
 		$(list).each(function(i,item){
 			var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.name+'</a></td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
 			$tr.find('.btn-group').Buttons([{
-				clazz:'btn-link',
+				clazz:'btn-info',
 				glyphicon:'glyphicon-edit',
 				text:'部门',
 				title:'修改部门',
@@ -98,7 +98,7 @@ function OrgContent(options){
 		});
 		$tbody.find('a[id]').click(function(){
 			var orgID = $(this).attr('id');
-			obj.load(orgID,false);
+			obj.load(orgID);
 		});
 	};
 	this.buildUser=function(list){
@@ -117,7 +117,7 @@ function OrgContent(options){
 			}
 			var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.account+'</a></td><td>'+item.name+'</td><td class="hidden-xs">'+item.age+'</td><td class="hidden-xs">'+roles+'</td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
 			$tr.find('.btn-group').Buttons([{
-				clazz:'btn-link',
+				clazz:'btn-info',
 				glyphicon:'glyphicon-edit',
 				text:'用户',
 				title:'修改用户',
@@ -162,16 +162,18 @@ function OrgDetailContent(options){
 		callback:function(){
 			obj.saveOrUpdate();
 		}
-	},{
-		clazz:'btn-warning',
-		glyphicon:'glyphicon-ok',
-		text:'提交',
-		title:'提交部门',
-//		data:{id:item.id},
-		callback:function(){
-			
-		}
-	}]);
+	}
+//	,{
+//		clazz:'btn-warning',
+//		glyphicon:'glyphicon-ok',
+//		text:'提交',
+//		title:'提交部门',
+////		data:{id:item.id},
+//		callback:function(){
+//			
+//		}
+//	}
+	]);
 	var title = '新增';
 	if(options.id){
 		title = '编辑';
@@ -191,7 +193,7 @@ function OrgDetailContent(options){
 		obj.slipIn();
 	}
 	if(options.id){
-		Proxy.getOrg(options.id,false, function(res){
+		Proxy.getOrg(options.id, function(res){
 			var org = res.result;
 			renderOrg(org);
 		});
@@ -212,7 +214,7 @@ function OrgDetailContent(options){
 		};
 		Proxy.saveOrUpdateOrg(param,function(res){
 			obj.slipOut();
-			obj.parent.load(OrgContent.CUR_ORG.id,false);
+			obj.parent.load(OrgContent.CUR_ORG.id);
 		});
 	};
 	

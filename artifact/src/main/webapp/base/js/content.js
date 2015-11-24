@@ -40,6 +40,7 @@ function AbstractContent(options){
 		obj.$content.removeClass('in out');
 		obj.$content.addClass('out');
 		setTimeout(function(){
+			Layout.Lefter.BackFun(false);
 			obj.$content.remove();
 		}, 350);
 	};
