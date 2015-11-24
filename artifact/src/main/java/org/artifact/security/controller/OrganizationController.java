@@ -6,6 +6,7 @@ package org.artifact.security.controller;
 import org.artifact.base.annotation.JsonFilter;
 import org.artifact.base.annotation.JsonResult;
 import org.artifact.security.domain.Organization;
+import org.artifact.security.domain.Role;
 import org.artifact.security.domain.User;
 import org.artifact.security.service.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +44,7 @@ public class OrganizationController {
 	@ResponseBody
 	@JsonResult(value = "根据ID查询部门", filter = {
 			@JsonFilter(value = { "parentOrg" }, target = Organization.class),
+			@JsonFilter(value = { "rolePermissionList" }, target = Role.class),
 			@JsonFilter(value = { "password" }, target = User.class) })
 	public Object get(@PathVariable Integer id) {
 		return organizationService.getOrganizationById(id);

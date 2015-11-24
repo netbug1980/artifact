@@ -78,8 +78,13 @@ public class SecurityMetadataSourceImpl implements
 				configAttributes.add(new SecurityConfig(rolePermission
 						.getRole().getName()));
 			}
-			sourceMap.put(new AntPathRequestMatcher(permission.getUrl()),
-					configAttributes);
+			AntPathRequestMatcher matcher = new AntPathRequestMatcher(
+					permission.getUrl());
+			if (sourceMap.containsKey(matcher)) {
+				sourceMap.get(matcher).addAll(configAttributes);
+			} else {
+				sourceMap.put(matcher, configAttributes);
+			}
 		}
 	}
 }

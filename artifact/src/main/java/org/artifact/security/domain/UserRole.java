@@ -27,7 +27,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 public class UserRole extends IdEntity {
 	@JsonIgnoreProperties(value = { "userRoleList" })
 	private User user;
-	@JsonIgnoreProperties(value = { "rolePermissionList", "userRoleList" })
+	@JsonIgnoreProperties(value = { "userRoleList" })
 	private Role role;
 
 	@ManyToOne(cascade = CascadeType.REFRESH)

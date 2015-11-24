@@ -36,6 +36,7 @@ public class LoginSuccessHandlerImpl implements AuthenticationSuccessHandler {
 		response.setContentType("application/json;charset=UTF-8");
 		HashMap<String, Object> result = new HashMap<String, Object>();
 		User user = (User) authentication.getPrincipal();
+		result.put("CUR_USER", user);
 		for (LoginSuccessHandler loginSuccessHandler : loginSuccessHandlerList) {
 			loginSuccessHandler.buildLoginSuccessResult(request, user, result);
 		}
