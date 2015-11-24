@@ -38,6 +38,13 @@ var Proxy = {
 			callback:callback
 		});
 	},
+	deleteOrg : function(orgID,callback){
+		new AjaxProxy({
+			url:'/api/security/organization/delete/'+orgID,
+			type:'DELETE',
+			callback:callback
+		});
+	},
 	saveOrUpdateOrg : function(param,callback){
 		new AjaxProxy({
 			url:'/api/security/organization/saveorupdate',
@@ -215,7 +222,7 @@ function AjaxProxy(options) {
 	};
 	this.start = function(){
 		if(AjaxProxy.ajaxMap[obj.key]){
-			Message.info('请勿重复提交');
+			Message.info('请勿重复请求');
 			return;
 		}else{
 			AjaxProxy.ajaxMap[obj.key] = obj;

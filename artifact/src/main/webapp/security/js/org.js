@@ -90,9 +90,19 @@ function OrgContent(options){
 				glyphicon:'glyphicon-remove',
 				text:'部门',
 				title:'删除部门',
-				data:{id:item.id},
+				data:item,
 				callback:function(){
-					
+					var $btn = $(this);
+					var orgid = $btn.data('data').id;
+					var orgname = $btn.data('data').name;
+					Message.confirm({selfClosing:false,
+						text:'确定删除“'+orgname+'”吗？',
+						help:'删除会将该部门下的所有子部门和用户一起删除。',
+						callback:function(){
+							Proxy.deleteOrg(orgid, function(res){
+								$btn.closest('tr').remove();
+							});
+						}});
 				}
 			}]);
 		});
