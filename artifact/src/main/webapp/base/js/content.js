@@ -30,17 +30,23 @@ function AbstractContent(options){
 		obj.$content.removeClass('in out');
 		obj.$content.addClass('in');
 		if($('.layout-container').find('.content').length>1){
-			Layout.Lefter.BackStack.push(function(){
-				obj.slipOut();
+			Layout.Backer.Stack.push({
+				callback : function() {
+					obj.slipOut(true);
+				},
+				type : Layout.Backer.Type.CONTENT
 			});
+			
 			$("#btn_nav_back").removeClass("invisible");
 		}
 	};
-	this.slipOut = function(){
+	this.slipOut = function(flag){
 		obj.$content.removeClass('in out');
 		obj.$content.addClass('out');
 		setTimeout(function(){
-			Layout.Lefter.BackFun(false);
+			if(!flag){
+				Layout.Backer.clickFun(false);
+			}
 			obj.$content.remove();
 		}, 350);
 	};

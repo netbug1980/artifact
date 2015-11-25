@@ -1,31 +1,62 @@
 var Layout = {
-		Lefter : {
-			minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
-			CurrentNav : null,
-			BackStack : new Array(),//导航返回按钮栈
-			BackFun:function(flag){
-				var backFun = Layout.Lefter.BackStack.pop();
-			if(flag){	backFun();}//恢复一级菜单
-				if(Layout.Lefter.BackStack.length==0){
+		/**
+		 * 回退按钮
+		 */
+		Backer:{
+			Type : {NAV:'NAV',CONTENT:'CONTENT'},
+			Stack : new Array(),
+			clickFun : function(flag) {
+				var backObj = Layout.Backer.Stack.pop();
+				if (flag) {
+					backObj.callback();
+				}
+				if (Layout.Backer.Stack.length == 0) {
 					$("#btn_nav_back").addClass("invisible");
 				}
 			},
+			cleanByType:function(type){
+				Layout.Backer.Stack = $(Layout.Backer.Stack).map(function(i,item){
+					if(item.type!=type){
+						return item;
+					}
+				}).get();
+				if (Layout.Backer.Stack.length == 0) {
+					$("#btn_nav_back").addClass("invisible");
+				}
+			}
+		},
+		/**
+		 * 左侧导航
+		 */
+		Lefter : {
+			minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
+			CurrentNav : null,
 			TopperNav : [{
-				title : "导航1",
+				title : "系统管理",
 				icon : "",
 				count:0,
+				permission:true,
 				childNav : [{
-					title : "导航11",
+					title : "部门管理",
 					icon : "",
 					count:0,
+					permission:true,
 					childNav : [],
 					callback : function() {
-						console.log("导航11");
+						//organication Class
+						var Org = new OrgContent({
+							hasHeader:true,
+							hasTitle:false,
+							hasBtnGroup:false
+						});
+						Org.init();
+						Org.load(1);
 					}
 				}, {
 					title : "导航12",
 					icon : "",
 					count:0,
+					permission:true,
 					childNav : [],
 					callback : function() {
 						console.log("导航12");
@@ -34,6 +65,7 @@ var Layout = {
 					title : "导航13",
 					icon : "",
 					count:0,
+					permission:true,
 					childNav : [],
 					callback : function() {
 						console.log("导航13");
@@ -46,8 +78,10 @@ var Layout = {
 				title : "导航2",
 				icon : "",
 				count:99,
+				permission:true,
 				childNav : [{
 					title : "导航21",
+					permission:true,
 					icon : "",
 					count:0,
 					childNav : [],
@@ -58,6 +92,7 @@ var Layout = {
 					title : "导航22",
 					icon : "",
 					count:0,
+					permission:true,
 					childNav : [],
 					callback : function() {
 						console.log("导航22");
@@ -70,6 +105,7 @@ var Layout = {
 				title : "导航3",
 				icon : "",
 				count:0,
+				permission:true,
 				childNav : [],
 				callback : function() {
 					console.log("导航3");
@@ -78,6 +114,7 @@ var Layout = {
 				title : "导航4",
 				icon : "",
 				count:0,
+				permission:true,
 				childNav : [],
 				callback : function() {
 					console.log("导航4");
@@ -85,10 +122,12 @@ var Layout = {
 			}],
 			BottomerNav : [{
 				title : "付磊森",
+				permission:false,
 				icon : "",
 				count:0,
 				childNav : [{
-					title : "登陆",
+					title : "个人信息",
+					permission:false,
 					icon : "",
 					count:0,
 					childNav : [],
@@ -103,6 +142,8 @@ var Layout = {
 								switch (response.code) {
 									case 0 :{
 										$("#singleModal").modal("hide");
+										
+										
 										break;
 									}
 									case -2 :{
@@ -127,6 +168,7 @@ var Layout = {
 					title : "注销",
 					icon : "",
 					count:0,
+					permission:false,
 					childNav : [],
 					callback : function() {
 						console.log("注销");
@@ -150,92 +192,152 @@ var Layout = {
 				title : "设置",
 				icon : "",
 				count:0,
+				permission:false,
 				childNav : [],
 				callback : function() {
 					console.log("设置");
 				}
 			}],
+			_flatNav:function(nav,path){
+				$(nav).each(function(i,item){
+					var temp = path;
+					item.path = path + item.title;
+					if(item.childNav.length==0){
+						if(item.permission){
+							if(!SessionHelper.hasPermission('/导航'+item.path)){
+								return true;
+							}
+						}
+						if(Layout.Lefter.CurrentNav==null){
+							Layout.Lefter.CurrentNav = item;
+						}
+						return true;
+					}else{
+						path = path + item.title + "/";
+						Layout.Lefter._flatNav(item.childNav,path);
+						path = temp;
+					}
+					
+				});
+			},
+			_buildNav : function($this,nav){
+				$this.addClass("out");
+				setTimeout(function(){
+					$this.empty();
+					$(nav).each(function(i,item){
+						if(item.permission){
+							if(!SessionHelper.hasPermission('/导航'+item.path)){
+								return true;
+							}
+						}
+						var $li = $("<li>").appendTo($this);
+						var $a = $("<a>").attr("href","#").appendTo($li);
+						item.icon = item.icon.trim()?item.icon:"glyphicon glyphicon-question-sign";
+						$("<span>").addClass(item.icon).addClass("margin-right-15").appendTo($a);
+						var $detail = $("<span>").addClass("detail").appendTo($a);
+						$("<span>").addClass("title").text(item.title).appendTo($detail);
+						var $title_ext = $("<span>").addClass("title-ext").appendTo($detail);
+						var $badge = $("<span>").addClass("badge").appendTo($title_ext);
+						if(item.count){
+							$badge.text(item.count);
+						}else{
+							$badge.addClass("invisible");
+						}
+						var $right = $("<span>").addClass("glyphicon glyphicon-chevron-right").appendTo($title_ext);
+						if(item.childNav.length==0){
+							$right.addClass("invisible");
+						}
+						$li.data('data',item);
+						$li.click(function(){
+							var item = $(this).data('data');
+							if(item.childNav.length>0){
+								
+								Layout.Lefter._buildNav($this,item.childNav);//创建二级菜单
+								Layout.Backer.Stack.push({
+									callback : function() {
+										Layout.Lefter._buildNav($this,nav);
+									},
+									type : Layout.Backer.Type.NAV
+								});
+								$("#btn_nav_back").removeClass("invisible");
+								
+							}else{
+								if(!$(this).hasClass("active")){
+									Layout.Lefter.CurrentNav = item;
+									$(".layout .layout-lefter .active").removeClass("active");
+									$(this).addClass("active");
+								}
+								$(".layout-container").removeClass("in out");
+								setTimeout(function(){
+									$(".layout-container").empty();
+									Layout.Backer.cleanByType(Layout.Backer.Type.CONTENT);//回退堆栈清除content相关数据
+									$(".layout-container").addClass("in");
+									item.callback();
+								}, 350);
+							}
+						});
+						if(Layout.Lefter.CurrentNav.path.indexOf(item.path)>=0){
+							$(".layout .layout-lefter .active").removeClass("active");
+							$li.addClass("active");
+						}
+					});
+					$this.removeClass("out");
+				}, 350);
+			},
+			buildTopper:function(){
+				
+				Layout.Lefter._flatNav(Layout.Lefter.TopperNav,"/");
+				
+				Layout.Lefter._buildNav($(".layout .layout-lefter .toper"),Layout.Lefter.TopperNav);
+			},
+			buildBottomer:function(){
+				
+				Layout.Lefter._flatNav(Layout.Lefter.BottomerNav,"/");
+				
+				Layout.Lefter._buildNav($(".layout .layout-lefter .bottomer"),Layout.Lefter.BottomerNav);
+			},
+			/**
+			 * 构建左侧导航
+			 */
+			build:function(refresh){
+				Layout.Lefter.buildTopper();
+				Layout.Lefter.buildBottomer();
+				if(!refresh){
+					Layout.Lefter.CurrentNav.callback();
+				}
+			}
+		}
+};
+/**
+ * Session相关辅助类
+ */
+var SessionHelper = {
+		/**
+		 * 是否有权限
+		 * @author netbug
+		 * @param path
+		 * @returns {Boolean}
+		 */
+		hasPermission :function(path){
+			var session = sessionStorage.currentSession;
+			var flag = false;
+			if (!!session) {
+				session = JSON.parse(session);
+				var user = session["CUR_USER"];
+				if (!!user) {
+					$(user.permissionPathArr).each(function(i,item){
+						if(item.indexOf(path)>=0){
+							flag = true;
+							return false;
+						}
+					});
+				}
+			}
+			return flag;
 		}
 };
 $(function() {
-	function flatNav(nav,path){
-		$(nav).each(function(i,item){
-			var temp = path;
-			item.path = path + item.title;
-			if(item.childNav.length==0){
-				if(Layout.Lefter.CurrentNav==null){
-					Layout.Lefter.CurrentNav = item;
-				}
-				return true;
-			}else{
-				path = path + item.title + "/";
-				flatNav(item.childNav,path);
-				path = temp;
-			}
-		});
-	}
-	flatNav(Layout.Lefter.TopperNav,"/");
-	flatNav(Layout.Lefter.BottomerNav,"/");
-	
-	function buildNav($this,nav){
-		$this.addClass("out");
-		setTimeout(function(){
-			$this.empty();
-			$(nav).each(function(i,item){
-				var $li = $("<li>").appendTo($this);
-				var $a = $("<a>").attr("href","#").appendTo($li);
-				item.icon = item.icon.trim()?item.icon:"glyphicon glyphicon-question-sign";
-				$("<span>").addClass(item.icon).addClass("margin-right-15").appendTo($a);
-				var $detail = $("<span>").addClass("detail").appendTo($a);
-				$("<span>").addClass("title").text(item.title).appendTo($detail);
-				var $title_ext = $("<span>").addClass("title-ext").appendTo($detail);
-				$badge = $("<span>").addClass("badge").appendTo($title_ext);
-				if(item.count){
-					$badge.text(item.count);
-				}else{
-					$badge.addClass("invisible");
-				}
-				var $right = $("<span>").addClass("glyphicon glyphicon-chevron-right").appendTo($title_ext);
-				if(item.childNav.length==0){
-					$right.addClass("invisible");
-				}
-				$li.data('data',item);
-				$li.click(function(){
-					var item = $(this).data('data');
-					if(item.childNav.length>0){
-						
-						buildNav($this,item.childNav);//创建二级菜单
-						Layout.Lefter.BackStack.push(function(){
-							buildNav($this,nav);
-						});
-						$("#btn_nav_back").removeClass("invisible");
-						
-					}else{
-						if(!$(this).hasClass("active")){
-							Layout.Lefter.CurrentNav = item;
-							$(".layout .layout-lefter .active").removeClass("active");
-							$(this).addClass("active");
-						}
-						$(".layout-container").removeClass("in out");
-						setTimeout(function(){
-							$(".layout-container").addClass("in");
-							item.callback();
-						}, 350);
-					}
-				});
-				if(Layout.Lefter.CurrentNav.path.indexOf(item.path)>=0){
-					$(".layout .layout-lefter .active").removeClass("active");
-					$li.addClass("active");
-				}
-			});
-			$this.removeClass("out");
-		}, 350);
-	}
-	buildNav($(".layout .layout-lefter .toper"),Layout.Lefter.TopperNav);
-	buildNav($(".layout .layout-lefter .bottomer"),Layout.Lefter.BottomerNav);
-	Layout.Lefter.CurrentNav.callback();
-	
-	
+	Layout.Lefter.build(false);
 	$("#btn_layout").click(function(e) {
 		if(!$(".layout").hasClass("in")&&!$(".layout").hasClass("out")){
 			if($(window).width() >= 768){//大屏
@@ -254,14 +356,7 @@ $(function() {
 		}
 	});
 	$("#btn_nav_back").click(function(){
-		Layout.Lefter.BackFun(true);
+		Layout.Backer.clickFun(true);
 	});
 	console.log($(window).width());
-	var Org = new OrgContent({
-		hasHeader:true,
-		hasTitle:false,
-		hasBtnGroup:false
-	});
-	Org.init();
-	Org.load(1);
 });

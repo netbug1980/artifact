@@ -8,6 +8,22 @@ var Proxy = {
 			callback : function(response) {
 				switch (response.code) {
 					case 0 : {
+						var user = response.result.CUR_USER;
+						var roleNameArr = new Array();
+						var permissionPathArr = new Array();
+						var permissionPathMap = new Object();
+						$(user.userRoleList).each(function(i,userRole){
+							var role = userRole.role;
+							roleNameArr.push(role.name);
+							$(role.rolePermissionList).each(function(j,rolePermission){
+								permissionPathMap[rolePermission.permission.path] = ''; 
+							});
+						});
+						for(var key in permissionPathMap){
+							permissionPathArr.push(key);
+						}
+						response.result.CUR_USER.roleNameArr = roleNameArr;
+						response.result.CUR_USER.permissionPathArr = permissionPathArr;
 						sessionStorage.currentSession = JSON
 								.stringify(response.result);
 						//还原之前需要登录的请求
@@ -242,14 +258,15 @@ $.ajaxSetup({
 						jqXHR.setRequestHeader(CsrfToken.headerName,
 								CsrfToken.token);
 					}
+					var user = session["CUR_USER"];
+					if (!!user) {
+						jqXHR.setRequestHeader('userID', user.id);
+						jqXHR.setRequestHeader('userName',encodeURIComponent(user.name));
+						jqXHR.setRequestHeader('userAccount',encodeURIComponent(user.account));
+					}
 					jqXHR.setRequestHeader('Accept', 'application/json');
-					// jqXHR.setRequestHeader('sessionID', session.sessionID);
-					// jqXHR.setRequestHeader('userID', session.userID);
-					// jqXHR.setRequestHeader('userName',
-					// encodeURIComponent(session.userName));
 
 				}
-				jqXHR.setRequestHeader('Cache-Control', 'public');
 				return true;
 			},
 			statusCode : {
