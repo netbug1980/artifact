@@ -49,6 +49,7 @@ var Layout = {
 							hasTitle:false,
 							hasBtnGroup:false
 						});
+						Org.$content.addClass('organization');
 						Org.init();
 						Org.load(1);
 					}
@@ -142,7 +143,7 @@ var Layout = {
 								switch (response.code) {
 									case 0 :{
 										$("#singleModal").modal("hide");
-										
+										Layout.Lefter.build(true);
 										
 										break;
 									}
