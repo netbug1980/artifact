@@ -1,22 +1,22 @@
 (function($){
-	jQuery.fn.Loading = function(uuid){
-		jQuery.fn.progress = function(uuid,width){
+	$.fn.Loading = function(uuid){
+		$.fn.progress = function(uuid,width){
 			var loading =$(this).data(uuid);
 			return loading.progress(width);
 		};
-		jQuery.fn.success = function(uuid){
+		$.fn.success = function(uuid){
 			var loading =$(this).data(uuid);
 			return loading.success();
 		};
-		jQuery.fn.warning = function(uuid){
+		$.fn.warning = function(uuid){
 			var loading =$(this).data(uuid);
 			return loading.warning();
 		};
-		jQuery.fn.danger = function(uuid){
+		$.fn.danger = function(uuid){
 			var loading =$(this).data(uuid);
 			return loading.danger();
 		};
-		jQuery.fn.removeLoading = function(uuid){
+		$.fn.removeLoading = function(uuid){
 			var loading =$(this).data(uuid);
 			$(this).removeData(uuid);
 			return loading.remove();

@@ -1,7 +1,7 @@
 /**
  * 提示信息
  */
-var Message = {
+module.exports = {
 		_buildOpt :function(options){
 			if(typeof(options)=="string"){
 				var temp = {};
@@ -11,22 +11,22 @@ var Message = {
 			return options;
 		},
 		success :function(options){
-			options = Message._buildOpt(options);
+			options = this._buildOpt(options);
 			options.clazz = "alert-success";
 			return new MessageAlert(options);
 		},
 		info :function(options){
-			options = Message._buildOpt(options);
+			options = this._buildOpt(options);
 			options.clazz = "alert-info";
 			return new MessageAlert(options);
 		},
 		warning :function(options){
-			options = Message._buildOpt(options);
+			options = this._buildOpt(options);
 			options.clazz = "alert-warning";
 			return new MessageAlert(options);
 		},
 		confirm :function(options){
-			options = Message._buildOpt(options);
+			options = this._buildOpt(options);
 			options.clazz = "alert-warning";
 			options.title = options.text;
 			options.text = '';
@@ -46,7 +46,7 @@ var Message = {
 			return message;
 		},
 		danger :function(options){
-			options = Message._buildOpt(options);
+			options = this._buildOpt(options);
 			options.clazz = "alert-danger";
 			return new MessageAlert(options);
 		}

@@ -1,4 +1,4 @@
-var Layout = {
+window.Layout = {
 		/**
 		 * 回退按钮
 		 */
@@ -44,6 +44,7 @@ var Layout = {
 					childNav : [],
 					callback : function() {
 						//organication Class
+						var OrgContent = require('../../security/js/org');
 						var Org = new OrgContent({
 							hasHeader:true,
 							hasTitle:false,
@@ -139,7 +140,7 @@ var Layout = {
 						$("#btn_login").click(function(){
 							var username = $('#singleModal form input[name="username"]').val().trim();
 							var password = $('#singleModal form input[name="password"]').val().trim();
-							Proxy.login({username:username,password:password}, function(response){
+							require("./proxy").login({username:username,password:password}, function(response){
 								switch (response.code) {
 									case 0 :{
 										$("#singleModal").modal("hide");
@@ -148,15 +149,15 @@ var Layout = {
 										break;
 									}
 									case -2 :{
-										Message.danger(response.message);
+										require('./message').danger(response.message);
 										break;
 									}
 									case -20 :{
-										Message.danger(response.message);
+										require('./message').danger(response.message);
 										break;
 									}
 									case -21 :{
-										Message.danger(response.message);
+										require('./message').danger(response.message);
 										break;
 									}
 									default :
@@ -173,10 +174,10 @@ var Layout = {
 					childNav : [],
 					callback : function() {
 						console.log("注销");
-						Proxy.logout(function(res){
+						require("./proxy").logout(function(res){
 							switch (res.code) {
 								case 0 :{
-									Message.success(res.result);
+									require('./message').success(res.result);
 									break;
 								}
 								
@@ -312,7 +313,7 @@ var Layout = {
 /**
  * Session相关辅助类
  */
-var SessionHelper = {
+window.SessionHelper = {
 		/**
 		 * 是否有权限
 		 * @author netbug

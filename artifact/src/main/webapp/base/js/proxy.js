@@ -1,4 +1,5 @@
-var Proxy = {
+require('./jquery.md5');
+module.exports =  {
 	login : function(user, callback) {
 		new AjaxProxy({
 			url : '/login',
@@ -100,6 +101,7 @@ function AjaxProxy(options) {
 	}
 	this.key = calMd5(this.options);
 	var $loadingContainer = obj.options.$loadingContainer;
+	require("./util");
 	var uuid = $loadingContainer.getUID('loading');
 	this.options.url = AjaxProxy.project + this.options.url;
 	this.options.xhr = function() {
@@ -110,6 +112,7 @@ function AjaxProxy(options) {
 		} else if (window.XMLHttpRequest) {
 			xhr = new XMLHttpRequest();
 		}
+		require("./jquery.loading")
 		$loadingContainer.Loading(uuid);// Loading初始化
 		var percent = 21;
 		var intervalId = null;
@@ -166,29 +169,29 @@ function AjaxProxy(options) {
 		$loadingContainer.success(uuid);
 		switch (response.code) {
 			case -1 : {//服务器错误
-				Message.danger(response.message);
+				require('./message').danger(response.message);
 				break;
 			}
 			case -22 : {//没有登录
 				AjaxProxy.ajaxStack.push(obj);
-				Message.danger(response.message);
+				require('./message').danger(response.message);
 				break;
 			}
 			case -30 : {//Session失效
 				AjaxProxy.ajaxStack.push(obj);
-				Message.danger(response.message);
+				require('./message').danger(response.message);
 				break;
 			}
 			case -31 : {//Session过期，您已在别处登陆
-				Message.danger(response.message);
+				require('./message').danger(response.message);
 				break;
 			}
 			case -40 : {//权限拒绝
-				Message.danger(response.message);
+				require('./message').danger(response.message);
 				break;
 			}
 			case -41 : {//CSRF
-				Message.danger(response.message);
+				require('./message').danger(response.message);
 				break;
 			}
 			default : {
@@ -205,10 +208,10 @@ function AjaxProxy(options) {
 				errorThrown = (errorThrown == '')
 						? 'jQuery.ajax返回的错误状态值是null，我们也不知道发生了什么'
 						: errorThrown;
-				Message.danger('出错啦:' + errorThrown);
+				require('./message').danger('出错啦:' + errorThrown);
 				break;
 			case "timeout" :
-				Message.danger('啊哦，连接超时啦，呆会再试试吧');
+				require('./message').danger('啊哦，连接超时啦，呆会再试试吧');
 				break;
 			case "error" :
 				// 'Not Found'基本不会发生，除非请求地址写错了
@@ -218,27 +221,27 @@ function AjaxProxy(options) {
 						|| errorThrown === 'Internal Server Error') {
 					// NO-OP
 				} else if (jqXHR.readyState === 0) {
-					Message
+					require('./message')
 							.danger('请求没成功，可能的错误有：1.失去网络连接,2.域名解析错误啦,3.跨域访问了,4.请求建立超时了');
 				} else {
 					errorThrown = (errorThrown == '')
 							? 'sorry, jQuery也没有给提示信息'
 							: errorThrown;
-					Message.danger('出现了未知错误:' + errorThrown);
+					require('./message').danger('出现了未知错误:' + errorThrown);
 				}
 				break;
 			case "abort" :
 				// NO-OP
-				Message.warning('客户端取消');
+				require('./message').warning('客户端取消');
 				break;
 			case "parsererror" :
-				Message.danger('啊哦，返回的数据解析不了啦，找程序员吧');
+				require('./message').danger('啊哦，返回的数据解析不了啦，找程序员吧');
 				break;
 		}
 	};
 	this.start = function(){
 		if(AjaxProxy.ajaxMap[obj.key]){
-			Message.info('请勿重复请求');
+			require('./message').info('请勿重复请求');
 			return;
 		}else{
 			AjaxProxy.ajaxMap[obj.key] = obj;
@@ -283,13 +286,13 @@ $.ajaxSetup({
 				// 404——没有发现文件、查询或URl
 				// 500——服务器产生内部错误
 				403 : function() {
-					Message.danger('会话过期啦，要重新登录哦');
+					require('./message').danger('会话过期啦，要重新登录哦');
 				},
 				404 : function() {
-					Message.danger('后台请求的地址不对哦');
+					require('./message').danger('后台请求的地址不对哦');
 				},
 				500 : function() {
-					Message.danger('后台服务出错啦，联系网络运维人员吧');
+					require('./message').danger('后台服务出错啦，联系网络运维人员吧');
 				}
 			}
 

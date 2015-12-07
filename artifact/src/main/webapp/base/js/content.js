@@ -1,4 +1,4 @@
-function AbstractContent(options){
+module.exports = function AbstractContent(options){
 	var obj = this;
 	this.defaults = {
 			hasHeader:true,

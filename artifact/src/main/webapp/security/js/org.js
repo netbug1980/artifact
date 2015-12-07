@@ -1,6 +1,7 @@
-OrgContent.CUR_ORG = null;
-function OrgContent(options){
-	AbstractContent.apply(this, arguments);
+require('../../base/js/jquery.buttons');
+window.CUR_ORG = null
+module.exports = function OrgContent(options){
+	require('../../base/js/content').apply(this, arguments);
 	this.$nav=null;
 	this.$orgPanel=null;
 	this.$userPanel=null;
@@ -38,7 +39,7 @@ function OrgContent(options){
 	};
 	this.load=function(orgID){
 		var obj = this;
-		Proxy.getOrg(orgID, function(res){
+		require("../../base/js/proxy").getOrg(orgID, function(res){
 			var org = res.result;
 			//部门路径导航
 			obj.buildNav(org);
@@ -47,7 +48,7 @@ function OrgContent(options){
 			//用户列表
 			obj.buildUser(org.userList);
 			
-			OrgContent.CUR_ORG = org;
+			CUR_ORG = org;
 		});
 	};
 	this.buildNav=function(org){
@@ -99,7 +100,7 @@ function OrgContent(options){
 						text:'确定删除“'+orgname+'”吗？',
 						help:'删除会将该部门下的所有子部门和用户一起删除。',
 						callback:function(){
-							Proxy.deleteOrg(orgid, function(res){
+							require("../../base/js/proxy").deleteOrg(orgid, function(res){
 								$btn.closest('tr').remove();
 							});
 						}});
@@ -162,7 +163,7 @@ OrgDetailContent.DEMO = '\
 function OrgDetailContent(options){
 	var obj = this;
 	var demo = OrgDetailContent.DEMO;
-	AbstractContent.apply(this, arguments);
+	require('../../base/js/content').apply(this, arguments);
 	this.$header.find('.btn-group').Buttons([{
 		clazz:'btn-primary',
 		glyphicon:'glyphicon-floppy-disk',
@@ -203,14 +204,14 @@ function OrgDetailContent(options){
 		obj.slipIn();
 	}
 	if(options.id){
-		Proxy.getOrg(options.id, function(res){
+		require("../../base/js/proxy").getOrg(options.id, function(res){
 			var org = res.result;
 			renderOrg(org);
 		});
 	}else{
 		var org = {
 				name:"",
-				fullPath:OrgContent.CUR_ORG.fullPath+'/'
+				fullPath:CUR_ORG.fullPath+'/'
 		};
 		renderOrg(org);
 	}
@@ -219,12 +220,12 @@ function OrgDetailContent(options){
 				id:obj.options.id?obj.options.id:'',
 				name:$('#orgInputName').val().trim(),
 				parentOrg:{
-					id:OrgContent.CUR_ORG.id
+					id:CUR_ORG.id
 				}
 		};
-		Proxy.saveOrUpdateOrg(param,function(res){
+		require("../../base/js/proxy").saveOrUpdateOrg(param,function(res){
 			obj.slipOut();
-			obj.parent.load(OrgContent.CUR_ORG.id);
+			obj.parent.load(CUR_ORG.id);
 		});
 	};
 	
