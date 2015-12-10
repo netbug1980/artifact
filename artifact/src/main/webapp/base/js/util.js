@@ -41,3 +41,33 @@
 		return uuid.join('');
 	};
 }();
++function() {
+	var Sys = {};
+	var ua = navigator.userAgent.toLowerCase();
+	console.log(ua);
+	var s;
+	(s = ua.match(/msie ([\d.]+)/)) ? Sys.ie = s[1] : "Do nothing";
+	(s = ua.match(/firefox\/([\d.]+)/)) ? Sys.firefox = s[1] : "Do nothing";
+	(s = ua.match(/chrome\/([\d.]+)/)) ? Sys.chrome = s[1] : "Do nothing";
+	(s = ua.match(/edge\/([\d.]+)/)) ? Sys.edge = s[1] : "Do nothing";
+	(s = ua.match(/safari\/([\d.]+)/)) ? Sys.safari = s[1] : (s = ua
+			.match(/version\/([\d.]+).*safari/))
+			? Sys.safari = s[1]
+			: "Do nothing";
+	(s = ua.match(/opera.([\d.]+)/)) ? Sys.opera = s[1] : "Do nothing";
+
+	//以下进行测试
+	if (Sys.ie)
+		console.log('IE: ' + Sys.ie);
+	if (Sys.firefox)
+		console.log('Firefox: ' + Sys.firefox);
+	if (Sys.chrome)
+		console.log('Chrome: ' + Sys.chrome);
+	if (Sys.edge)
+		console.log('Edge: ' + Sys.edge);
+	if (Sys.opera)
+		console.log('Opera: ' + Sys.opera);
+	if (Sys.safari)
+		console.log('Safari: ' + Sys.safari);
+	window.browser = Sys;
+}();
