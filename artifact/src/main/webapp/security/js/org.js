@@ -1,4 +1,5 @@
 require('../../base/js/jquery.buttons');
+var Message = require('../../base/js/message');
 window.CUR_ORG = null
 module.exports = function OrgContent(options){
 	require('../../base/js/content').apply(this, arguments);
@@ -7,8 +8,9 @@ module.exports = function OrgContent(options){
 	this.$userPanel=null;
 	this.panelDemo='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group btn-group-sm pull-right"></div></div><table class="table table-hover table-striped"><tbody></tbody></table></div>';
 	this.init=function(){
+		var $row = $('<div class="row"></div>').appendTo(this.$container);
 		this.$nav = $('<ol class="breadcrumb org">').appendTo(this.$header);
-		this.$orgPanel = $(this.panelDemo).addClass('panel-org').appendTo(this.$container);
+		this.$orgPanel = $(this.panelDemo).addClass('panel-org').appendTo($('<div class="col-md-5"></div>').appendTo($row));
 		this.$orgPanel.find('.panel-title').text('部门');
 		this.$orgPanel.find('.btn-group').Buttons([{
 			clazz:'btn-info',
@@ -24,7 +26,7 @@ module.exports = function OrgContent(options){
 				});
 			}
 		}]);
-		this.$userPanel = $(this.panelDemo).addClass('panel-user').appendTo(this.$container);
+		this.$userPanel = $(this.panelDemo).addClass('panel-user').appendTo($('<div class="col-md-7"></div>').appendTo($row));
 		this.$userPanel.find('.panel-title').text('用户');
 		this.$userPanel.find('.btn-group').Buttons([{
 			clazz:'btn-info',
@@ -39,7 +41,7 @@ module.exports = function OrgContent(options){
 	};
 	this.load=function(orgID){
 		var obj = this;
-		require("../../base/js/proxy").getOrg(orgID, function(res){
+		require("./proxy").getOrg(orgID, function(res){
 			var org = res.result;
 			//部门路径导航
 			obj.buildNav(org);
@@ -100,7 +102,7 @@ module.exports = function OrgContent(options){
 						text:'确定删除“'+orgname+'”吗？',
 						help:'删除会将该部门下的所有子部门和用户一起删除。',
 						callback:function(){
-							require("../../base/js/proxy").deleteOrg(orgid, function(res){
+							require("./proxy").deleteOrg(orgid, function(res){
 								$btn.closest('tr').remove();
 							});
 						}});
@@ -204,7 +206,7 @@ function OrgDetailContent(options){
 		obj.slipIn();
 	}
 	if(options.id){
-		require("../../base/js/proxy").getOrg(options.id, function(res){
+		require("./proxy").getOrg(options.id, function(res){
 			var org = res.result;
 			renderOrg(org);
 		});
@@ -223,7 +225,7 @@ function OrgDetailContent(options){
 					id:CUR_ORG.id
 				}
 		};
-		require("../../base/js/proxy").saveOrUpdateOrg(param,function(res){
+		require("./proxy").saveOrUpdateOrg(param,function(res){
 			obj.slipOut();
 			obj.parent.load(CUR_ORG.id);
 		});

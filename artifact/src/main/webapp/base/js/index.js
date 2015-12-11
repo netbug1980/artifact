@@ -30,60 +30,17 @@ window.Layout = {
 		 */
 		Lefter : {
 			minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
-			CurrentNav : null,
+			CurrentNav : null, // 非link导航
 			TopperNav : [{
-				title : "系统管理",
-				icon : "",
-				count:0,
-				permission:true,
-				childNav : [{
-					title : "部门管理",
-					icon : "",
-					count:0,
-					permission:true,
-					childNav : [],
-					callback : function() {
-						//organication Class
-						var OrgContent = require('../../security/js/org');
-						var Org = new OrgContent({
-							hasHeader:true,
-							hasTitle:false,
-							hasBtnGroup:false
-						});
-						Org.$content.addClass('organization');
-						Org.init();
-						Org.load(1);
-					}
-				}, {
-					title : "导航12",
-					icon : "",
-					count:0,
-					permission:true,
-					childNav : [],
-					callback : function() {
-						console.log("导航12");
-					}
-				}, {
-					title : "导航13",
-					icon : "",
-					count:0,
-					permission:true,
-					childNav : [],
-					callback : function() {
-						console.log("导航13");
-					}
-				}],
-				callback : function() {
-					console.log("导航1");
-				}
-			}, {
 				title : "导航2",
 				icon : "",
 				count:99,
 				permission:true,
+				link:true,
 				childNav : [{
 					title : "导航21",
 					permission:true,
+					link:true,
 					icon : "",
 					count:0,
 					childNav : [],
@@ -95,6 +52,7 @@ window.Layout = {
 					icon : "",
 					count:0,
 					permission:true,
+					link:true,
 					childNav : [],
 					callback : function() {
 						console.log("导航22");
@@ -108,6 +66,7 @@ window.Layout = {
 				icon : "",
 				count:0,
 				permission:true,
+				link:true,
 				childNav : [],
 				callback : function() {
 					console.log("导航3");
@@ -117,87 +76,31 @@ window.Layout = {
 				icon : "",
 				count:0,
 				permission:true,
+				link:true,
 				childNav : [],
 				callback : function() {
 					console.log("导航4");
 				}
 			}],
-			BottomerNav : [{
-				title : "付磊森",
-				permission:false,
-				icon : "",
-				count:0,
-				childNav : [{
-					title : "个人信息",
-					permission:false,
-					icon : "",
-					count:0,
-					childNav : [],
-					callback : function() {
-						console.log("登陆");
-						$("#singleModal").modal("show");
-						$("#btn_login").unbind();
-						$("#btn_login").click(function(){
-							var username = $('#singleModal form input[name="username"]').val().trim();
-							var password = $('#singleModal form input[name="password"]').val().trim();
-							require("./proxy").login({username:username,password:password}, function(response){
-								switch (response.code) {
-									case 0 :{
-										$("#singleModal").modal("hide");
-										Layout.Lefter.build(true);
-										
-										break;
-									}
-									case -2 :{
-										require('./message').danger(response.message);
-										break;
-									}
-									case -20 :{
-										require('./message').danger(response.message);
-										break;
-									}
-									case -21 :{
-										require('./message').danger(response.message);
-										break;
-									}
-									default :
-										break;
-								}
-							});
-						});
-					}
-				}, {
-					title : "注销",
-					icon : "",
-					count:0,
-					permission:false,
-					childNav : [],
-					callback : function() {
-						console.log("注销");
-						require("./proxy").logout(function(res){
-							switch (res.code) {
-								case 0 :{
-									require('./message').success(res.result);
-									break;
-								}
-								
-								default :
-									break;
-							}
-						});
-					}
-				}],
-				callback : function() {
-					
-				}
-			}, {
+			BottomerNav : [ {
 				title : "设置",
 				icon : "",
 				count:0,
 				permission:false,
+				link:true,
 				childNav : [],
 				callback : function() {
 					console.log("设置");
+				}
+			},{
+				title : "登陆",
+				permission:false,
+				link:false,
+				icon : "",
+				count:0,
+				childNav : [],
+				callback : function() {
+					Login();
 				}
 			}],
 			_flatNav:function(nav,path){
@@ -210,7 +113,7 @@ window.Layout = {
 								return true;
 							}
 						}
-						if(Layout.Lefter.CurrentNav==null){
+						if(Layout.Lefter.CurrentNav==null&&item.link){
 							Layout.Lefter.CurrentNav = item;
 						}
 						return true;
@@ -264,18 +167,22 @@ window.Layout = {
 								$("#btn_nav_back").removeClass("invisible");
 								
 							}else{
-								if(!$(this).hasClass("active")){
-									Layout.Lefter.CurrentNav = item;
-									$(".layout .layout-lefter .active").removeClass("active");
-									$(this).addClass("active");
-								}
-								$(".layout-container").removeClass("in out");
-								setTimeout(function(){
-									$(".layout-container").empty();
-									Layout.Backer.cleanByType(Layout.Backer.Type.CONTENT);//回退堆栈清除content相关数据
-									$(".layout-container").addClass("in");
+								if(item.link){//非链接操作，仅仅执行回调函数
+									if(!$(this).hasClass("active")){
+										Layout.Lefter.CurrentNav = item;
+										$(".layout .layout-lefter .active").removeClass("active");
+										$(this).addClass("active");
+									}
+									$(".layout-container").removeClass("in out");
+									setTimeout(function(){
+										$(".layout-container").empty();
+										Layout.Backer.cleanByType(Layout.Backer.Type.CONTENT);//回退堆栈清除content相关数据
+										$(".layout-container").addClass("in");
+										item.callback();
+									}, 350);
+								}else{
 									item.callback();
-								}, 350);
+								}
 							}
 						});
 						if(Layout.Lefter.CurrentNav.path.indexOf(item.path)>=0){
@@ -302,10 +209,56 @@ window.Layout = {
 			 * 构建左侧导航
 			 */
 			build:function(refresh){
+				Layout.Backer.cleanByType(Layout.Backer.Type.NAV);
+				if(!refresh){
+					//登陆成功后个人信息展示
+					Layout.Lefter.logined();
+				}
 				Layout.Lefter.buildTopper();
 				Layout.Lefter.buildBottomer();
 				if(!refresh){
 					Layout.Lefter.CurrentNav.callback();
+				}
+			},
+			logined:function(){
+				var session = sessionStorage.currentSession;
+				if (!!session) {
+					session = JSON.parse(session);
+					var user = session["CUR_USER"];
+					if (!!user) {
+						var nav = {
+								title : user.name,
+								permission:false,
+								link:true,
+								icon : "",
+								count:0,
+								childNav : [{
+									title : "个人信息",
+									permission:false,
+									link:true,
+									icon : "",
+									count:0,
+									childNav : [],
+									callback : function() {
+										
+									}
+								}, {
+									title : "注销",
+									icon : "",
+									count:0,
+									permission:false,
+									link:false,
+									childNav : [],
+									callback : function() {
+										Logout();
+									}
+								}],
+								callback : function() {
+									
+								}
+							};
+						Layout.Lefter.BottomerNav.splice(1,1,nav);
+					}
 				}
 			}
 		}
@@ -338,27 +291,68 @@ window.SessionHelper = {
 			return flag;
 		}
 };
-$(function() {
-	Layout.Lefter.build(false);
-	$("#btn_layout").click(function(e) {
-		if(!$(".layout").hasClass("in")&&!$(".layout").hasClass("out")){
-			if($(window).width() >= 768){//大屏
-				$(".layout").addClass("out");
-			}else{//小屏
-				$(".layout").addClass("in");
+/**
+ * 登陆
+ */
+window.Login = function(){
+	console.log("登陆");
+	$("#singleModal").modal("show");
+	$("#btn_login").unbind();
+	$("#btn_login").click(function(){
+		var username = $('#singleModal form input[name="username"]').val().trim();
+		var password = $('#singleModal form input[name="password"]').val().trim();
+		require("./proxy").login({username:username,password:password}, function(response){
+			switch (response.code) {
+				case 0 :{
+					$("#singleModal").modal("hide");
+					//登陆成功后个人信息展示
+					Layout.Lefter.logined();
+					
+					Layout.Lefter.build(true);
+					break;
+				}
+				case -2 :{
+					require('./message').danger(response.message);
+					break;
+				}
+				case -20 :{
+					require('./message').danger(response.message);
+					break;
+				}
+				case -21 :{
+					require('./message').danger(response.message);
+					break;
+				}
+				default :
+					break;
 			}
-		}else{
-			if ($(".layout").hasClass("in")) {
-				$(".layout").removeClass("in");
-				$(".layout").addClass("out");
-			} else {
-				$(".layout").removeClass("out");
-				$(".layout").addClass("in");
+		});
+	});
+};
+window.Logout = function(){
+	require("./proxy").logout(function(res){
+		switch (res.code) {
+			case 0 :{
+				require('./message').success(res.result);
+				var nav = {
+						title : "登陆",
+						permission:false,
+						link:false,
+						icon : "",
+						count:0,
+						childNav : [],
+						callback : function() {
+							Login();
+						}
+					};
+				Layout.Lefter.BottomerNav.splice(1,1,nav);
+				delete sessionStorage.currentSession;
+				Layout.Lefter.build(true);
+				break;
 			}
+			
+			default :
+				break;
 		}
 	});
-	$("#btn_nav_back").click(function(){
-		Layout.Backer.clickFun(true);
-	});
-	console.log($(window).width());
-});
+};
