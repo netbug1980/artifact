@@ -1,7 +1,5 @@
 require('./base/js/index');
 require('./security/js/index');
-var compile = require('./base/handlebars/test.handlebars');
-//var tpl = compile(test1);
 
 $(function() {
 	Layout.Lefter.build(false);

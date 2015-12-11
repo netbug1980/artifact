@@ -295,7 +295,9 @@ window.SessionHelper = {
  * 登陆
  */
 window.Login = function(){
-	console.log("登陆");
+	var compile = require('../handlebars/login.handlebars');
+	var tpl = compile();
+	$("#singleModal .modal-content").html(tpl);
 	$("#singleModal").modal("show");
 	$("#btn_login").unbind();
 	$("#btn_login").click(function(){
