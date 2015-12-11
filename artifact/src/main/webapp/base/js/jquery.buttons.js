@@ -30,7 +30,7 @@
 		};
 		this.buildBtn = function(item){
 			var $btn = $('<button>').addClass('btn '+item.clazz).attr('title',item.title?item.title:item.text).appendTo($container);
-			$btn.append('<span')
+			$btn.append('<span');
 			$('<span>').addClass('glyphicon '+ item.glyphicon).appendTo($btn);
 			$btn.append(' '+item.text);
 			$btn.data('data',item.data);

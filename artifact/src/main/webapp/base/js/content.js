@@ -52,4 +52,4 @@ module.exports = function AbstractContent(options){
 	};
 	this.$content.data('content',obj);
 	return this;
-}
+};

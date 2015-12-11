@@ -42,7 +42,7 @@ module.exports = function AjaxProxy(options) {
 		} else if (window.XMLHttpRequest) {
 			xhr = new XMLHttpRequest();
 		}
-		require("./jquery.loading")
+		require("./jquery.loading");
 		$loadingContainer.Loading(uuid);// Loading初始化
 		var percent = 21;
 		var intervalId = null;
@@ -180,7 +180,7 @@ module.exports = function AjaxProxy(options) {
 		$.ajax(obj.options);
 	};
 	this.start();
-}
+};
 $.ajaxSetup({
 	beforeSend : function(jqXHR, settings) {
 		var session = sessionStorage.currentSession;

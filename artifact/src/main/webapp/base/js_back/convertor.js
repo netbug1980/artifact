@@ -28,7 +28,7 @@ function translate(point,type,callback,obj){
         delete BMap.Convertor[callbackName];    //调用完需要删除改函数
         var point = new BMap.Point(xyResult.x, xyResult.y);
         callback && callback(point,obj);
-    }
+    };
 }
 window.GPStranslate = function(point,callback,obj){
     var convertor = new BMap.Convertor();

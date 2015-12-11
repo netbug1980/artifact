@@ -1,6 +1,6 @@
 require('../../base/js/jquery.buttons');
 var Message = require('../../base/js/message');
-window.CUR_ORG = null
+window.CUR_ORG = null;
 module.exports = function OrgContent(options){
 	require('../../base/js/content').apply(this, arguments);
 	this.$nav=null;
@@ -150,7 +150,7 @@ module.exports = function OrgContent(options){
 			}]);
 		});
 	};
-}
+};
 OrgDetailContent.DEMO = '\
 	<form>\
 	  <div class="form-group">\
