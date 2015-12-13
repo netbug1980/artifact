@@ -21,5 +21,12 @@ module.exports =  {
 			data:JSON.stringify(param),
 			callback:callback
 		});
-	}
+	},
+	deleteUser : function(userID,callback){
+		new AjaxProxy({
+			url:'/api/security/user/delete/'+userID,
+			type:'DELETE',
+			callback:callback
+		});
+	},
 };
