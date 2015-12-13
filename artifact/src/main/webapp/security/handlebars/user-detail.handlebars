@@ -1,0 +1,77 @@
+<div class="row">
+	<div class="col-md-7">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">基本信息</h3>
+			</div>
+			<div class="panel-body">
+		    <form>
+			  <div class="form-group">
+			    <label for="account">账号</label>
+			    <input type="text" class="form-control" id="account" value="{{account}}" placeholder="账号">
+			  </div>
+			  <div class="form-group">
+			    <label for="name">姓名</label>
+			    <input type="text" class="form-control" id="name" value="{{name}}" placeholder="姓名">
+			  </div>
+			  <div class="form-group">
+			    <label for="age">年龄</label>
+			    <input type="number" class="form-control" id="age" value="{{age}}" placeholder="20">
+			  </div>
+			  <div class="form-group">
+			    <label for="org">部门</label>
+			    <input type="text" class="form-control" id="org" value="{{organization.fullPath}}" placeholder="部门全路径" readonly>
+			  </div>
+			</form>
+		  </div>
+		</div>
+		<div class="panel panel-warning panel-role">
+			<div class="panel-heading">
+				<h3 class="panel-title">角色</h3>
+			</div>
+			<table class="table table-hover">
+			<tbody>
+			{{#each userRoleList}}
+			<tr><td><a href="#" id="{{role.id}}">{{role.name}}</a></td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>
+			{{/each}}
+			</tbody></table>
+		  <div class="panel-footer">
+				<div class="btn-group btn-group-sm"><button class="btn btn-warning" title="更新角色"><span class="glyphicon glyphicon-floppy-save"></span> 角色</button></div><h3 class="panel-title">&nbsp;</h3>
+		  </div>
+		</div>
+		<div class="panel panel-danger panel-password">
+			<div class="panel-heading">
+				<h3 class="panel-title">密码</h3>
+			</div>
+			<div class="panel-body">
+			{{#if verifypw}}
+			  <div class="form-group">
+			    <label for="oldpassword">旧密码</label>
+			    <input type="password" class="form-control" id="oldpassword" placeholder="">
+			  </div>
+			 {{/if}}
+			  <div class="form-group">
+			    <label for="password">新密码</label>
+			    <input type="password" class="form-control" id="password" placeholder="">
+			  </div>
+			  
+			  <div class="form-group">
+			    <label for="repassword">确认密码</label>
+			    <input type="password" class="form-control" id="repassword" placeholder="">
+			  </div>
+		  </div>
+			<div class="panel-footer">
+				<div class="btn-group btn-group-sm"><button class="btn btn-danger" id="btn_update_password" title="更新密码"><span class="glyphicon glyphicon-floppy-save"></span> 密码</button></div><h3 class="panel-title">&nbsp;</h3>
+		  </div>
+		</div>
+	</div>
+	<div class="col-md-5">
+		<div class="panel panel-info">
+			<div class="panel-heading">
+				<h3 class="panel-title">权限</h3>
+			</div>
+			<div class="panel-body">
+		  </div>
+		</div>
+	</div>
+</div>

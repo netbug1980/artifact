@@ -6,7 +6,7 @@ module.exports = function OrgContent(options){
 	this.$nav=null;
 	this.$orgPanel=null;
 	this.$userPanel=null;
-	this.panelDemo='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group btn-group-sm pull-right"></div></div><table class="table table-hover table-striped"><tbody></tbody></table></div>';
+	this.panelDemo='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group btn-group-sm pull-right"></div></div><table class="table table-hover"><tbody></tbody></table></div>';
 	this.init=function(){
 		var $row = $('<div class="row"></div>').appendTo(this.$container);
 		this.$nav = $('<ol class="breadcrumb org">').appendTo(this.$header);
@@ -35,6 +35,12 @@ module.exports = function OrgContent(options){
 			title:'新增用户',
 			data:{},
 			callback:function(){
+				var UserContent = require("./user");
+				new UserContent({
+					hasHeader:true,
+					hasTitle:true,
+					hasBtnGroup:true
+				});
 				
 			}
 		}]);
@@ -136,7 +142,14 @@ module.exports = function OrgContent(options){
 				title:'修改用户',
 				data:{id:item.id},
 				callback:function(){
-					
+					var UserContent = require("./user");
+					new UserContent({
+						hasHeader:true,
+						hasTitle:true,
+						hasBtnGroup:true,
+						id:$(this).data('data').id,
+						verifypw:true
+					});
 				}
 			},{
 				clazz:'btn-danger',
@@ -168,7 +181,7 @@ function OrgDetailContent(options){
 	require('../../base/js/content').apply(this, arguments);
 	this.$header.find('.btn-group').Buttons([{
 		clazz:'btn-primary',
-		glyphicon:'glyphicon-floppy-disk',
+		glyphicon:'glyphicon-floppy-save',
 		text:'保存',
 		title:'保存部门',
 //		data:{id:item.id},
