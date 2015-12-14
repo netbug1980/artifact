@@ -17,7 +17,7 @@ var nav = {
 			var Org = new OrgContent({
 				hasHeader:true,
 				hasTitle:false,
-				hasBtnGroup:true
+				hasBtnGroup:false
 			});
 			Org.$content.addClass('organization');
 			Org.init();
