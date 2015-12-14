@@ -30,6 +30,17 @@ module.exports = function UserContent(options){
 		}
 		]);
 		
+		obj.$container.find('.panel-role .panel-heading .btn-group').Buttons([{
+			clazz:'btn-info',
+			glyphicon:'glyphicon-check',
+			text:'角色',
+			title:'选择角色',
+			callback:function(){
+				require('./role').selectModal();
+			}
+		}
+		]);
+		
 		//更新密码
 		obj.$container.find("#btn_update_password").click(function(){
 			//verifypw
