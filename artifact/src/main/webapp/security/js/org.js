@@ -3,10 +3,31 @@ var Message = require('../../base/js/message');
 window.CUR_ORG = null;
 module.exports = function OrgContent(options){
 	require('../../base/js/content').apply(this, arguments);
+	var obj = this;
+	this.$header.find('.btn-group').Buttons([{
+		clazz:'btn-info',
+		glyphicon:'glyphicon-eye-open',
+		text:'编辑',
+		title:'编辑模式',
+//		data:{id:item.id},
+		callback:function(){
+			var $glyphicon = $(this).find('.glyphicon');
+			if($glyphicon.hasClass('glyphicon-eye-open')){
+				$glyphicon.removeClass('glyphicon-eye-open');
+				$glyphicon.addClass('glyphicon-eye-close');
+				obj.$container.find('.fade').addClass('in');
+			}else{
+				$glyphicon.removeClass('glyphicon-eye-close');
+				$glyphicon.addClass('glyphicon-eye-open');
+				obj.$container.find('.fade').removeClass('in');
+			}
+		}
+	}
+	]);
 	this.$nav=null;
 	this.$orgPanel=null;
 	this.$userPanel=null;
-	this.panelDemo='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group btn-group-sm pull-right"></div></div><table class="table table-hover table-striped"><tbody></tbody></table></div>';
+	this.panelDemo='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group fade btn-group-sm pull-right"></div></div><table class="table table-hover"><tbody></tbody></table></div>';
 	this.init=function(){
 		var $row = $('<div class="row"></div>').appendTo(this.$container);
 		this.$nav = $('<ol class="breadcrumb org">').appendTo(this.$header);
@@ -35,6 +56,12 @@ module.exports = function OrgContent(options){
 			title:'新增用户',
 			data:{},
 			callback:function(){
+				var UserContent = require("./user");
+				new UserContent({
+					hasHeader:true,
+					hasTitle:true,
+					hasBtnGroup:true
+				});
 				
 			}
 		}]);
@@ -73,7 +100,7 @@ module.exports = function OrgContent(options){
 			return ;
 		}
 		$(list).each(function(i,item){
-			var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.name+'</a></td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
+			var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.name+'</a></td><td><div class="btn-group fade btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
 			$tr.find('.btn-group').Buttons([{
 				clazz:'btn-info',
 				glyphicon:'glyphicon-edit',
@@ -128,7 +155,7 @@ module.exports = function OrgContent(options){
 			if(item.userRoleList.length>3){
 				roles += '…';
 			}
-			var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.account+'</a></td><td>'+item.name+'</td><td class="hidden-xs">'+item.age+'</td><td class="hidden-xs">'+roles+'</td><td><div class="btn-group btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
+			var $tr = $('<tr><td><a href="#" id="'+item.id+'">'+item.account+'</a></td><td>'+item.name+'</td><td class="hidden-xs">'+item.age+'</td><td class="hidden-xs">'+roles+'</td><td><div class="btn-group fade btn-group-xs pull-right"></div></td></tr>').appendTo($tbody);
 			$tr.find('.btn-group').Buttons([{
 				clazz:'btn-info',
 				glyphicon:'glyphicon-edit',
@@ -136,16 +163,33 @@ module.exports = function OrgContent(options){
 				title:'修改用户',
 				data:{id:item.id},
 				callback:function(){
-					
+					var UserContent = require("./user");
+					new UserContent({
+						hasHeader:true,
+						hasTitle:true,
+						hasBtnGroup:true,
+						id:$(this).data('data').id,
+						verifypw:true
+					});
 				}
 			},{
 				clazz:'btn-danger',
 				glyphicon:'glyphicon-remove',
 				text:'用户',
 				title:'删除用户',
-				data:{id:item.id},
+				data:item,
 				callback:function(){
-					
+					var $btn = $(this);
+					var userid = $btn.data('data').id;
+					var username = $btn.data('data').name;
+					Message.confirm({selfClosing:false,
+						text:'确定删除“'+username+'”吗？',
+						help:'删除后不可恢复。',
+						callback:function(){
+							require("./proxy").deleteUser(userid, function(res){
+								$btn.closest('tr').remove();
+							});
+						}});
 				}
 			}]);
 		});
@@ -168,7 +212,7 @@ function OrgDetailContent(options){
 	require('../../base/js/content').apply(this, arguments);
 	this.$header.find('.btn-group').Buttons([{
 		clazz:'btn-primary',
-		glyphicon:'glyphicon-floppy-disk',
+		glyphicon:'glyphicon-floppy-save',
 		text:'保存',
 		title:'保存部门',
 //		data:{id:item.id},

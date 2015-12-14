@@ -51,6 +51,14 @@ public class UserController {
 		return user.getId();
 	}
 
+	@RequestMapping(value = "/updatepassword", method = RequestMethod.POST)
+	@ResponseBody
+	@JsonResult("更新用户密码")
+	public Object updatePassword(@RequestBody UserCondition userCondition) {
+		userService.updatePassword(userCondition);
+		return userCondition.getId();
+	}
+
 	@RequestMapping(value = "/relaterole", method = RequestMethod.POST)
 	@ResponseBody
 	@JsonResult("人员关联角色")

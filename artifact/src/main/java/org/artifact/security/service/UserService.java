@@ -7,7 +7,9 @@ import org.artifact.security.condition.UserCondition;
 import org.artifact.security.dao.UserDao;
 import org.artifact.security.domain.User;
 import org.artifact.security.domain.UserRole;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 /**
@@ -32,7 +34,30 @@ public class UserService {
 	 * @author Netbug
 	 */
 	public void saveOrUpdate(User user) {
-		this.saveOrUpdate(user, false);
+		if (user.getId() != null) {
+			User oldUser = userDao.getEntity(user.getId(), User.class);
+			BeanUtils.copyProperties(user, oldUser, new String[] { "account",
+					"password" });
+			userDao.saveOrUpdate(oldUser);
+		} else {
+			BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+			user.setPassword(pe.encode("123456"));
+			userDao.saveOrUpdate(user);
+		}
+	}
+
+	/**
+	 * 更新用户密码
+	 * <p>
+	 * 日期：2015年12月13日
+	 * 
+	 * @param user
+	 * @author Netbug
+	 */
+	public void updatePassword(UserCondition userCondition) {
+		User oldUser = userDao.getEntity(userCondition.getId(), User.class);
+		BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+		oldUser.setPassword(pe.encode(userCondition.getPassword()));
 	}
 
 	/**

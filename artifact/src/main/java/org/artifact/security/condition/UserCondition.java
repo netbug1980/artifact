@@ -14,9 +14,18 @@ import org.artifact.base.condition.BaseCondition;
  * @author Netbug
  */
 public class UserCondition extends BaseCondition {
+	private Integer id;
 	private String account;
 	private String name;
 	private String password;
+
+	public Integer getId() {
+		return id;
+	}
+
+	public void setId(Integer id) {
+		this.id = id;
+	}
 
 	public String getAccount() {
 		return account;
