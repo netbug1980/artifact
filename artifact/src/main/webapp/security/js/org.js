@@ -6,7 +6,7 @@ module.exports = function OrgContent(options){
 	this.$nav=null;
 	this.$orgPanel=null;
 	this.$userPanel=null;
-	this.panelDemo='<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group  btn-group-sm pull-right"></div></div><table class="table table-hover"><tbody></tbody></table></div>';
+	this.panelDemo='<div class="panel panel-light panel-default"><div class="panel-heading"><h3 class="panel-title"></h3><div class="btn-group  btn-group-sm pull-right"></div></div><table class="table table-hover"><tbody></tbody></table></div>';
 	this.init=function(){
 		var $row = $('<div class="row"></div>').appendTo(this.$container);
 		this.$nav = $('<ol class="breadcrumb org">').appendTo(this.$header);
