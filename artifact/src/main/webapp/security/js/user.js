@@ -98,6 +98,8 @@ module.exports = function UserContent(options){
 			data:JSON.stringify({id:user.id,password:pw}),
 			callback:function(res){
 				Message.success("更新密码成功。");
+				$("#password").parent().removeClass("has-error");
+				$("#repassword").parent().removeClass("has-error");
 			}
 		});
 	};
@@ -113,6 +115,7 @@ module.exports = function UserContent(options){
 			data:JSON.stringify({account:user.account,password:opw}),
 			callback:function(res){
 				if(res.result){
+					$("#oldpassword").parent().removeClass("has-error");
 					obj.updatePassword(user);
 				}else{
 					$("#oldpassword").parent().addClass("has-error");
