@@ -188,4 +188,25 @@ public class UserService {
 		return userDao.find();
 	}
 
+	/**
+	 * 验证用户名与密码
+	 * <p>
+	 * 日期：2015年12月14日
+	 * 
+	 * @param account
+	 * @param password
+	 * @return
+	 * @author Netbug
+	 */
+	public Boolean verify(String account, String password) {
+		UserCondition condition = new UserCondition();
+		condition.setAccount(account);
+		User user = userDao.findUser(condition);
+		if (user == null) {
+			return false;
+		}
+		BCryptPasswordEncoder pe = new BCryptPasswordEncoder();
+		return pe.matches(password, user.getPassword());
+	}
+
 }

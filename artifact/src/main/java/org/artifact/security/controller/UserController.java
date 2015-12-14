@@ -43,6 +43,14 @@ public class UserController {
 		return result;
 	}
 
+	@RequestMapping(value = "/verify", method = RequestMethod.POST)
+	@ResponseBody
+	@JsonResult("验证人员")
+	public Object verify(@RequestBody UserCondition condition) {
+		return userService.verify(condition.getAccount(),
+				condition.getPassword());
+	}
+
 	@RequestMapping(value = "/saveorupdate", method = RequestMethod.POST)
 	@ResponseBody
 	@JsonResult("新增或更新人员")

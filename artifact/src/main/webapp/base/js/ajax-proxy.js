@@ -125,7 +125,11 @@ module.exports = function AjaxProxy(options) {
 				break;
 			}
 			default : {
-				obj.options.callback(response);
+				try {
+					obj.options.callback(response);
+				} catch (e) {
+					console.error(e);
+				}
 				break;
 			}
 		}

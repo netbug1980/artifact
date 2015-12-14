@@ -32,7 +32,12 @@ module.exports = function UserContent(options){
 		
 		//更新密码
 		obj.$container.find("#btn_update_password").click(function(){
-			obj.updatePassword(user);
+			//verifypw
+			if(verifypw){
+				obj.verifyAndupdatePassword(user);
+			}else{
+				obj.updatePassword(user);
+			}
 		});
 		obj.slipIn();
 	};
@@ -62,7 +67,6 @@ module.exports = function UserContent(options){
 		user.account = $("#account").val();
 		user.name = $("#name").val();
 		user.age = $("#age").val();
-		delete user.password;
 		new AjaxProxy({
 			url:'/api/security/user/saveorupdate',
 			type:'POST',
@@ -76,14 +80,16 @@ module.exports = function UserContent(options){
 	
 	this.updatePassword = function(user){
 		
-		//verifypw
-		
 		var pw = $("#password").val().trim();
 		var repw = $("#repassword").val().trim();
+		if(!pw||!repw){//判空
+			return false;
+		}
 		if(pw!=repw){
 			$("#password").parent().addClass("has-error");
 			$("#repassword").parent().addClass("has-error");
 			Message.warning("新密码与确认密码不相同！");
+			$("#repassword").focus();
 			return false;
 		}
 		new AjaxProxy({
@@ -92,6 +98,27 @@ module.exports = function UserContent(options){
 			data:JSON.stringify({id:user.id,password:pw}),
 			callback:function(res){
 				Message.success("更新密码成功。");
+			}
+		});
+	};
+	
+	this.verifyAndupdatePassword = function(user){
+		var opw = $("#oldpassword").val().trim();
+		if(!opw){//判空
+			return false;
+		}
+		new AjaxProxy({
+			url:'/api/security/user/verify',
+			type:'POST',
+			data:JSON.stringify({account:user.account,password:opw}),
+			callback:function(res){
+				if(res.result){
+					obj.updatePassword(user);
+				}else{
+					$("#oldpassword").parent().addClass("has-error");
+					Message.warning("旧密码不正确，请重新输入！");
+					$("#oldpassword").focus();
+				}
 			}
 		});
 	};
