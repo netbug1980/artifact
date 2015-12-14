@@ -5,7 +5,7 @@ module.exports = function UserContent(options){
 	var obj = this;
 	Content.apply(this,arguments);
 	var id = options.id;
-	var verifypw = options.verifypw;
+	var verifypw = options.verifypw;//当用户自主修改密码时，需要验证密码
 	var title = '新增';
 	if(id){
 		title = '编辑';
@@ -35,8 +35,10 @@ module.exports = function UserContent(options){
 			//verifypw
 			if(verifypw){
 				obj.verifyAndupdatePassword(user);
-			}else{
+			}else if(user.id){
 				obj.updatePassword(user);
+			}else{
+				obj.saveOrUpdateUser(user,true);//先保存用户，再更新密码
 			}
 		});
 		obj.slipIn();
@@ -63,17 +65,42 @@ module.exports = function UserContent(options){
 		}
 	};
 	
-	this.saveOrUpdateUser = function(user){
-		user.account = $("#account").val();
-		user.name = $("#name").val();
+	/**
+	 * flag 是否点击了“更新密码”按钮
+	 */
+	this.saveOrUpdateUser = function(user,flag){
+		user.account = $("#account").val().trim();
+		user.name = $("#name").val().trim();
 		user.age = $("#age").val();
+		if(!user.account){//判空
+			return false;
+		}
+		//保存前需要验证账号唯一性
 		new AjaxProxy({
-			url:'/api/security/user/saveorupdate',
-			type:'POST',
-			data:JSON.stringify(user),
+			url:'/api/security/user/getby/'+user.account,
+			type:'GET',
 			callback:function(res){
-				obj.slipOut();
-				obj.parent.load(CUR_ORG.id);
+				if(!!res.result&&res.result.id!=user.id){//排除自己
+					$("#account").parent().addClass("has-error");
+					Message.warning("账号“" +user.account+ "”已存在！");
+					$("#account").focus();
+				}else{
+					$("#account").parent().removeClass("has-error");
+					new AjaxProxy({
+						url:'/api/security/user/saveorupdate',
+						type:'POST',
+						data:JSON.stringify(user),
+						callback:function(res){
+							if(flag){
+								user.id = res.result;
+								obj.updatePassword(user);
+							}else{
+								obj.slipOut();
+								obj.parent.load(CUR_ORG.id);
+							}
+						}
+					});
+				}
 			}
 		});
 	};

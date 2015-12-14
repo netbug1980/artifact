@@ -82,6 +82,13 @@ public class UserController {
 		return userService.getUserById(id);
 	}
 
+	@RequestMapping(value = "/getby/{account}", method = RequestMethod.GET)
+	@ResponseBody
+	@JsonResult("根据账号获得用户信息，用于账号判重")
+	public Object getByAccout(@PathVariable String account) {
+		return userService.findUser(account, null);
+	}
+
 	@RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE)
 	@ResponseBody
 	@JsonResult("根据主键删除用户")

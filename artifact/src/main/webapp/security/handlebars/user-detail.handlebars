@@ -8,7 +8,7 @@
 		    <form>
 			  <div class="form-group">
 			    <label for="account">账号</label>
-			    <input type="text" class="form-control" id="account" value="{{account}}" placeholder="账号">
+			    <input type="text" class="form-control" id="account" value="{{account}}" placeholder="账号" {{#if id}} readonly {{/if}}>
 			  </div>
 			  <div class="form-group">
 			    <label for="name">姓名</label>
