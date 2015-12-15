@@ -36,7 +36,7 @@ module.exports = function UserContent(options){
 			text:'角色',
 			title:'选择角色',
 			callback:function(){
-				require('./role').selectModal();
+				require('./role').selectPopover($(this));
 			}
 		}
 		]);

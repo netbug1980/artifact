@@ -287,6 +287,51 @@
 	}
 }
 
+.popover {
+	border-radius: 0px;
+	border: 1px solid #ccc;
+}
+
+.popover-title {
+	line-height: 21px;
+}
+
+.popover-content-footer {
+	height: 28px;
+}
+
+.popover-content-content {
+	width: 244px;
+	height: 250px;
+	overflow-y: auto;
+	margin-bottom: 9px;
+	li {
+		font-size: 14px;
+		line-height: 200%;
+		margin: 5px;
+		border: solid 1px transparent;
+		position: relative;
+		cursor: pointer;
+		.glyphicon {
+			margin-right: 5px;
+		}
+	}
+	li.active {
+		background-color:#ddd;
+	}
+	li.active:hover {
+		background-color:#ddd;
+	}
+
+	li:hover {
+		background-color: #f5f5f5;
+	}
+}
+
+.btn .glyphicon {
+	margin-right: 5px;
+}
+
 @media screen {
 	@media (max-width: 768px) {
 		.layout {
@@ -338,6 +383,10 @@
 
 		.progress.loading {
 			height: 3px;
+		}
+
+		.popover-content-content {
+			width: 200px;
 		}
 	}
 }

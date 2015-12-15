@@ -13,6 +13,7 @@ import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJacksonInputMessage;
 
@@ -35,18 +36,16 @@ import com.fasterxml.jackson.databind.type.TypeFactory;
  */
 public class JsonResult2HttpMessageConverter extends
 		MappingJackson2HttpMessageConverter {
-	private ObjectMapper objectMapperForRead;
 
 	public JsonResult2HttpMessageConverter() {
 		super();
-		this.objectMapperForRead = new ObjectMapper();
 	}
 
 	@Override
 	protected void writeInternal(Object object, Type type,
 			HttpOutputMessage outputMessage) throws IOException,
 			HttpMessageNotWritableException {
-
+		this.objectMapper = Jackson2ObjectMapperBuilder.json().build();// 暂时以此来清空“由addMixIn添加的过滤条件”
 		JsonEncoding encoding = getJsonEncoding(outputMessage.getHeaders()
 				.getContentType());
 		JsonGenerator generator = this.objectMapper.getFactory()
@@ -86,6 +85,7 @@ public class JsonResult2HttpMessageConverter extends
 	public Object read(Type type, Class<?> contextClass,
 			HttpInputMessage inputMessage) throws IOException,
 			HttpMessageNotReadableException {
+		this.objectMapper = Jackson2ObjectMapperBuilder.json().build();// 暂时以此来清空“由addMixIn添加的过滤条件”
 		try {
 			JavaType javaType = TypeFactory.defaultInstance().constructType(
 					type, contextClass);
@@ -93,14 +93,14 @@ public class JsonResult2HttpMessageConverter extends
 				Class<?> deserializationView = ((MappingJacksonInputMessage) inputMessage)
 						.getDeserializationView();
 				if (deserializationView != null) {
-					return this.objectMapperForRead
+					return this.objectMapper
 							.readerWithView(deserializationView)
 							.withType(javaType)
 							.readValue(inputMessage.getBody());
 				}
 			}
-			return this.objectMapperForRead.readValue(inputMessage.getBody(),
-					javaType);
+			return this.objectMapper
+					.readValue(inputMessage.getBody(), javaType);
 		} catch (IOException ex) {
 			throw new HttpMessageNotReadableException(
 					"Could not read document: " + ex.getMessage(), ex);

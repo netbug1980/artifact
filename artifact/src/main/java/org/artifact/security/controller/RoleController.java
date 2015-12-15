@@ -3,6 +3,7 @@
  */
 package org.artifact.security.controller;
 
+import org.artifact.base.annotation.JsonFilter;
 import org.artifact.base.annotation.JsonResult;
 import org.artifact.security.condition.RoleCondition;
 import org.artifact.security.domain.Role;
@@ -32,7 +33,8 @@ public class RoleController {
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	@ResponseBody
-	@JsonResult("查询所有角色")
+	@JsonResult(value = "查询所有角色", filter = { @JsonFilter(value = {
+			"userRoleList", "rolePermissionList" }, target = Role.class) })
 	public Object search(@RequestBody RoleCondition condition) {
 		return this.roleService.find();
 	}
