@@ -14,7 +14,7 @@
 		this.options = $.extend({},defaults,options);
 		var obj = this;
 		var compile = require('../handlebars/popover.handlebars');
-		var tpl = compile();
+		var tpl = compile(this.options);
 		$this.attr('data-content',tpl);
 		$this.popover({
 			html:true,
@@ -42,18 +42,42 @@
 			$('.popover').on('mousedown.popover',function (event) {
 				event.stopPropagation();
 			});
+			/**
+			 * 关闭按钮
+			 */
 			var $close = $('<button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>').appendTo($tip.find('.popover-title'));
 			$close.click(function(){
 				popover.destroy();
 			});
 			
+			/**
+			 * 全选按钮
+			 */
+			if(obj.options.showCheck){
+				var $btn = $tip.find('.popover-content-footer .btn-check');
+				$btn.click(function(){
+					var $gly = $(this).find('.glyphicon');
+					if($gly.hasClass('glyphicon-unchecked')){
+						$gly.removeClass('glyphicon-unchecked');
+						$gly.addClass('glyphicon-check');
+						$content.find('li .glyphicon').removeClass('glyphicon-unchecked glyphicon-check').addClass('glyphicon-check');
+					}else{
+						$gly.removeClass('glyphicon-check');
+						$gly.addClass('glyphicon-unchecked');
+						$content.find('li .glyphicon').removeClass('glyphicon-unchecked glyphicon-check').addClass('glyphicon-unchecked');
+					}
+				});
+			}
+			/**
+			 * 默认渲染方法
+			 */
 			popover.defaultRender = function(data){
-				var data = {
+				var res = {
 					data:data,
 					showCheck:obj.options.showCheck
 				};
-				var compile = require('../handlebars/popover-li.handlebars')
-				var html = compile(data);
+				var compile = require('../handlebars/popover-li.handlebars');
+				var html = compile(res);
 				$content.append(html);
 				$content.find('li').click(function(){
 					$content.find('li').removeClass('active');

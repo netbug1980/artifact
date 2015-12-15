@@ -18,7 +18,7 @@ Role.selectPopover = function($btn){
 				}
 			});
 			
-			var $btn = pop.$tip.find('.popover-content-footer .btn');
+			var $btn = pop.$tip.find('.popover-content-footer .btn-ok');
 			$btn.click(function(){
 				pop.destroy();
 			});
