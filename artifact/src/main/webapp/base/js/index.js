@@ -29,7 +29,7 @@ window.Layout = {
 		 * 左侧导航
 		 */
 		Lefter : {
-			minWidth : 50, // 此处与layout.less中的layout-lefter-min-width变量相等
+			minWidth : 55, // 此处与layout.less中的layout-lefter-min-width变量相等
 			CurrentNav : null, // 非link导航
 			TopperNav : [{
 				title : "导航2",

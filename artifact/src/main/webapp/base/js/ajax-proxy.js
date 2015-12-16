@@ -5,6 +5,7 @@ window.AJAX_PROXY = {
 		ajaxMap : new Object()// 避免重复提交
 };
 module.exports = function AjaxProxy(options) {
+	var dfd = $.Deferred(); // 生成Deferred对象
 	this.defaults = {
 		url : '',
 		type : 'POST',
@@ -14,10 +15,7 @@ module.exports = function AjaxProxy(options) {
 		dataType : 'json',
 		timeout : 20000,
 		data : null,
-		$loadingContainer : $('.layout-message'),
-		callback : function(response) {
-
-		}
+		$loadingContainer : $('.layout-message')
 	};
 	this.options = $.extend({}, this.defaults, options);
 	var obj = this;
@@ -126,7 +124,7 @@ module.exports = function AjaxProxy(options) {
 			}
 			default : {
 				try {
-					obj.options.callback(response);
+					dfd.resolve(response);
 				} catch (e) {
 					console.error(e);
 				}
@@ -173,6 +171,7 @@ module.exports = function AjaxProxy(options) {
 				require('./message').danger('啊哦，返回的数据解析不了啦，找程序员吧');
 				break;
 		}
+		dfd.reject();
 	};
 	this.start = function() {
 		if (AJAX_PROXY.ajaxMap[obj.key]) {
@@ -184,6 +183,7 @@ module.exports = function AjaxProxy(options) {
 		$.ajax(obj.options);
 	};
 	this.start();
+	return dfd.promise();
 };
 $.ajaxSetup({
 	beforeSend : function(jqXHR, settings) {

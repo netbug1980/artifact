@@ -71,7 +71,6 @@ public class UserService {
 	 * @author Netbug
 	 */
 	public void saveOrUpdate(User user, boolean relateRoleFlag) {
-		userDao.saveOrUpdate(user);
 		if (relateRoleFlag) {
 			/**
 			 * 移除旧的关联角色

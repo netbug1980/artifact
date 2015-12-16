@@ -7,6 +7,7 @@
 	function MyPopover($this,options){
 		var defaults = {
 				showCheck:true,
+				checkedArr:[],
 				callback:function(popover){
 					
 				}
@@ -72,12 +73,27 @@
 			 * 默认渲染方法
 			 */
 			popover.defaultRender = function(data){
-				var res = {
-					data:data,
-					showCheck:obj.options.showCheck
-				};
+
 				var compile = require('../handlebars/popover-li.handlebars');
-				var html = compile(res);
+				var res = {
+						data:data,
+						showCheck:obj.options.showCheck,
+						checkedArr:obj.options.checkedArr
+				};
+				var helperOptions = {
+						helpers : {
+								isExist:function(value,arr,options) {
+									for(var i in arr){
+										if(value==arr[i]){
+											return options.fn(this);
+										}
+									}
+									return options.inverse(this);
+								}
+						}
+						
+				};
+				var html = compile(res,helperOptions);
 				$content.append(html);
 				$content.find('li').click(function(){
 					$content.find('li').removeClass('active');
@@ -93,6 +109,27 @@
 						}
 					}
 				});
+			};
+			
+			/**
+			 * 默认取值方法
+			 */
+			popover.defaultGetData = function(){
+				function getData($li){
+					return {id:$li.attr('id'),name:$li.text()};
+				};
+				if(obj.options.showCheck){
+					return $content.find('.glyphicon-check').map(function(){
+						var $li = $(this).parent();
+						return getData($li);
+					}).get();
+				}else{
+					if($content.find('.active').length>0){
+						return getData($content.find('.active'));
+					}else{
+						return null;
+					}
+				}
 			};
 			
 			//显示后处理自定义回调
