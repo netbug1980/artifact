@@ -279,7 +279,7 @@
 	box-shadow: none;
 	> .panel-heading {
 		background-color: #fff;
-		padding-right:8px;
+		padding-right: 8px;
 	}
 
 	> .panel-footer {
@@ -291,7 +291,7 @@
 .popover {
 	border-radius: 0px;
 	border: 1px solid #ccc;
-	max-width:none;
+	max-width: none;
 }
 
 .popover-title {
@@ -318,11 +318,13 @@
 			margin-right: 5px;
 		}
 	}
+
 	li.active {
-		background-color:#ddd;
+		background-color: #ddd;
 	}
+
 	li.active:hover {
-		background-color:#ddd;
+		background-color: #ddd;
 	}
 
 	li:hover {
@@ -332,6 +334,99 @@
 
 .btn .glyphicon {
 	margin-right: 5px;
+}
+
+.abs-tree {
+	bottom: 0;
+	height: auto;
+	left: 0;
+	overflow: auto;
+	position: absolute;
+	right: 0;
+	top: 0;
+	ol {
+		list-style: outside none none;
+		margin: 0;
+		padding: 0;
+		position: relative;
+		ol {
+			padding-left: 20px;
+			> li::before {
+				border-bottom: 1px dotted #ccc;
+				bottom: 50%;
+				content: "";
+				left: -8px;
+				position: absolute;
+				right: auto;
+				top: 0;
+				width: 10px;
+			}
+
+			ol::after {
+				border-left: 1px dotted #ccc;
+				bottom: 0;
+				content: "";
+				left: -10px;
+				position: absolute;
+				right: 0;
+				top: 1px;
+				width: 0;
+			}
+
+			ol:last-child::after {
+				border: medium none;
+			}
+
+			> li::after {
+				border-left: 1px dotted #ccc;
+				bottom: 0;
+				content: "";
+				left: -10px;
+				position: absolute;
+				right: 0;
+				top: 1px;
+				width: 0;
+			}
+
+			> li:last-of-type::after {
+				bottom: 50%;
+			}
+		}
+	}
+
+	li {
+		cursor: pointer;
+		display: block;
+		line-height: 30px;
+		margin: 0;
+		padding: 0 5px;
+		position: relative;
+		.fa {
+			margin-right: 4px;
+		}
+
+		.fa-blank {
+			font-family: inherit;
+			height: 14px;
+			width: 11px;
+		}
+
+		.fa-blank::before {
+			content: "";
+		}
+	}
+
+	li.active {
+		background: none repeat scroll 0 0 #ddd;
+	}
+
+	> ol > li {
+		border-top: 1px solid #eee;
+	}
+
+	> ol > li:first-child {
+		border-top: medium none;
+	}
 }
 
 @media screen {

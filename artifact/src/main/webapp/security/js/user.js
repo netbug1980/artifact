@@ -1,5 +1,6 @@
 var Content = require("../../base/js/content");
 var AjaxProxy = require('../../base/js/ajax-proxy');
+require('../../base/js/jquery.mytree');
 var Message = require('../../base/js/message');
 module.exports = function UserContent(options){
 	var obj = this;
@@ -52,6 +53,42 @@ module.exports = function UserContent(options){
 		}).get();
 		
 		this.randerRoleTr(roles);
+		
+		obj.$container.find('.panel-permission .panel-body').MyTree({
+			treeType : 'org',// org:组织机构；user：用户；
+			showCheck : true,
+			enableSearch : false,
+			spread : false,
+			spreadLevel : 0,
+			checkedData : [],
+			data : [ {
+				text : '组织机构',
+				checkState : false,// 复选框选中状态
+				checkable : true,// 是否可用于提取最终结果
+				complete : true,// 是否已经加载过
+				hasChild : true,
+				icon : 'fa fa-sitemap',
+				originalData : {
+					organizationID : '',
+					organizationName : '组织机构'
+				},// 原始数据 用于自定义用途 如封装请求参数等 可选
+				data : [{
+					text : '组织机构',
+					checkState : false,// 复选框选中状态
+					checkable : true,// 是否可用于提取最终结果
+					complete : true,// 是否已经加载过
+					hasChild : true,
+					icon : 'fa fa-sitemap',
+					originalData : {
+						organizationID : '',
+						organizationName : '组织机构'
+					},// 原始数据 用于自定义用途 如封装请求参数等 可选
+					data : []
+				// 子数据 可选
+				}]
+			// 子数据 可选
+			} ]
+		});
 		
 		//保存基本信息
 		this.$header.find('.btn-group').Buttons([{
