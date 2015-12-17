@@ -159,6 +159,9 @@ function AbstractTree($container, options) {
 		if (data.hasChild) {
 			$obj.collapseClass($btn, 'plus');
 		}
+		if (data.data.length>0) {
+			$obj.collapseClass($btn, 'minus');
+		}
 		// 加入复选框
 		if ($obj.options.showCheck) {
 			var $check = $('<i class="fa checkbox">').appendTo(li);
