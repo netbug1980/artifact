@@ -2,6 +2,7 @@ var Content = require("../../base/js/content");
 var AjaxProxy = require('../../base/js/ajax-proxy');
 require('../../base/js/jquery.mytree');
 var Message = require('../../base/js/message');
+var Permission = require('./permission');
 module.exports = function UserContent(options){
 	var obj = this;
 	Content.apply(this,arguments);
@@ -61,72 +62,10 @@ module.exports = function UserContent(options){
 		permListTemp.push({id:1,path:'/操作/系统管理/部户管理/查'});
 		permListTemp.push({id:1,path:'/操作2/系统管理/部户管理/查'});
 		
-		function strustPrem(node, permListTemp) {
-			var regStr = '';
-			regStr = '^'
-					+ (node.originalData.path).replace(new RegExp('\/', 'g'),
-							'\/') + '\/[^\/]*';
-			var regExp = new RegExp(regStr);
-			var data = new Array();
-			var last = '';
-			for (var i = 0; i < permListTemp.length; i++) {
-				if (regExp.test(permListTemp[i].path)) {
-					var temp = regExp.exec(permListTemp[i].path)[0];
-					var arr = temp.split('/');
-					var newNode = {
-						text : arr[arr.length - 1],
-						checkState : false,
-						checkable : false,
-						complete : true,
-						hasChild : false,
-						icon : '',
-						originalData : {
-							id : permListTemp[i].id,
-							path : temp
-						},
-						data : []
-					// 子数据 可选
-					};
-					if (temp == permListTemp[i].path) {
-						newNode.checkable = true;
-						// newNode.checkState = true;
-						permListTemp.splice(i, 1);
-						i--;
-					}
-					if (last != temp) {
-						data.push(newNode);
-						last = temp;
-					}
-				}
-			}
-			if (data.length > 0) {
-				node.hasChild = true;
-				node.data = data;
-			}
-			for ( var i in data) {
-				strustPrem(data[i], permListTemp);
-			}
-			return data;
-		}
-		var data = [ {
-			text : '导航权限',
-			checkState : false,
-			checkable : false,
-			complete : true,
-			hasChild : false,
-			icon : '',
-			originalData : {
-				id : '',
-				path : ''
-			},
-			data : []
-		// 子数据 可选
-		}];
-		strustPrem(data[0],permListTemp);
-		
+		var data = Permission.structTreeData(permListTemp);
 		obj.$container.find('.panel-permission .panel-body').MyTree({
 			treeType : 'org',// org:组织机构；user：用户；
-			showCheck : true,
+			showCheck : false,
 			enableSearch : false,
 			spread : false,
 			spreadLevel : 0,
