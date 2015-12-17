@@ -61,7 +61,7 @@ public class JsonResultAspect {
 	@Around(value = "JsonResultPointcut()")
 	public org.artifact.base.util.JsonResult doAround(
 			ProceedingJoinPoint joinPoint) {
-		logger.debug("根据JsonResult注解，统一封装返回结果。");
+		logger.info("根据JsonResult注解，统一封装返回结果。");
 		String desc = "";
 		String argsJson = "无";
 		try {
@@ -82,7 +82,7 @@ public class JsonResultAspect {
 			this.filterJsonResult(jsonResultAnno, method, jsonResult);
 			return jsonResult;
 		} catch (Throwable e) {
-			logger.debug("异常方法【{}】异常类型【{}】异常信息【{}】参数【{}】", joinPoint
+			logger.warn("异常方法【{}】异常类型【{}】异常信息【{}】参数【{}】", joinPoint
 					.getTarget().getClass().getName()
 					+ "." + joinPoint.getSignature().getName(), e.getClass()
 					.getName(), e.getMessage(), argsJson, e);
