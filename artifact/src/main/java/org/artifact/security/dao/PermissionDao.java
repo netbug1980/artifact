@@ -27,4 +27,20 @@ public class PermissionDao extends BaseDao<Permission> {
 		return (List<Permission>) this.find(condition);
 
 	}
+
+	/**
+	 * 根据角色ID数组获取权限列表
+	 * <p>
+	 * 日期：2015年12月18日
+	 * 
+	 * @param condition
+	 * @return
+	 * @author Netbug
+	 */
+	@SuppressWarnings("unchecked")
+	public List<Permission> findByRoleIds(BaseCondition condition) {
+		condition
+				.setHql("select p from RolePermission rp inner join rp.permission p on rp.role.id in (:roleIds)");
+		return (List<Permission>) super.find(condition);
+	}
 }

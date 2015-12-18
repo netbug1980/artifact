@@ -14,5 +14,13 @@ import org.artifact.base.condition.BaseCondition;
  * @author Netbug
  */
 public class PermissionCondition extends BaseCondition {
-	
+	private Integer[] roleIds;
+
+	public Integer[] getRoleIds() {
+		return roleIds;
+	}
+
+	public void setRoleIds(Integer[] roleIds) {
+		this.roleIds = roleIds;
+	}
 }

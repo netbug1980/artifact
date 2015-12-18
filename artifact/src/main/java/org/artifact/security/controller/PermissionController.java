@@ -38,6 +38,13 @@ public class PermissionController {
 		return this.permissionService.find();
 	}
 
+	@RequestMapping(value = "/findbyroleids", method = RequestMethod.POST)
+	@ResponseBody
+	@JsonResult(value = "根据角色ID数组获取权限列表", filter = { @JsonFilter(value = { "rolePermissionList" }, target = Permission.class) })
+	public Object search(@RequestBody Integer[] roleIds) {
+		return this.permissionService.findByRoleIds(roleIds);
+	}
+
 	@RequestMapping(value = "/saveorupdate", method = RequestMethod.POST)
 	@ResponseBody
 	@JsonResult("新增或更新资源")
