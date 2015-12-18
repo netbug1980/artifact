@@ -49,28 +49,28 @@ module.exports = function UserContent(options){
 		delete user.verifypw;
 		obj.$container.html(tpl);
 		
+		//角色列表
 		var roles = $(user.userRoleList).map(function(i,item){
 			return item.role;
 		}).get();
-		
 		this.randerRoleTr(roles);
-
-		var permListTemp = [];
-		permListTemp.push({id:1,path:'/操作/系统管理/用户管理/查询用户详'});
-		permListTemp.push({id:2,path:'/操作/系统管理/用户管理/查询用'});
-		permListTemp.push({id:1,path:'/操作/系统管理/用户管理/查询'});
-		permListTemp.push({id:1,path:'/操作/系统管理/部户管理/查'});
-		permListTemp.push({id:1,path:'/操作2/系统管理/部户管理/查'});
 		
-		var data = Permission.structTreeData(permListTemp);
-		obj.$container.find('.panel-permission .panel-body').MyTree({
-			treeType : 'org',// org:组织机构；user：用户；
-			showCheck : false,
-			enableSearch : false,
-			spread : false,
-			spreadLevel : 0,
-			checkedData : [],
-			data : data
+		//权限树
+		new AjaxProxy({
+			url : '/api/security/permission/search',
+			type : 'POST',
+			data : JSON.stringify({})
+		}).done(function(res) {
+			var data = Permission.structTreeData(res.result);
+			obj.$container.find('.panel-permission .panel-body').MyTree({
+				treeType : 'org',// org:组织机构；user：用户；
+				showCheck : false,
+				enableSearch : false,
+				spread : false,
+				spreadLevel : 0,
+				checkedData : [],
+				data : data
+			});
 		});
 		
 		//保存基本信息

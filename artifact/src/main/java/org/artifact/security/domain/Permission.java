@@ -13,6 +13,7 @@ import javax.persistence.Table;
 
 import org.artifact.base.domain.IdEntity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
@@ -28,6 +29,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(name = "sec_permission")
 public class Permission extends IdEntity {
 	private String path;
+	@JsonIgnore
 	private String url;
 	@JsonIgnoreProperties(value = { "permission" })
 	private List<RolePermission> rolePermissionList;

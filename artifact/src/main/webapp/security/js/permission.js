@@ -5,7 +5,7 @@ function Permission() {
 		checkable : false,
 		complete : true,
 		hasChild : false,
-		icon : 'fa fa-lock',
+		icon : 'fa fa-shield',
 		originalData : {
 			id : '',
 			path : ''
@@ -31,7 +31,7 @@ Permission.prototype.renderData = function(node, pmsList) {
 				checkable : false,
 				complete : true,
 				hasChild : false,
-				icon : 'fa fa-object-group',
+				icon : 'fa fa-shield',
 				originalData : {
 					id : pmsList[i].id,
 					path : temp
@@ -40,7 +40,7 @@ Permission.prototype.renderData = function(node, pmsList) {
 			};
 			if (temp == pmsList[i].path) {
 				newNode.checkable = true;
-				newNode.icon = 'fa fa-file-o';
+				newNode.icon = 'fa fa-key';
 				// newNode.checkState = true;
 				pmsList.splice(i, 1);
 				i--;
@@ -60,6 +60,9 @@ Permission.prototype.renderData = function(node, pmsList) {
 	}
 };
 Permission.structTreeData = function(pmsList) {
+	pmsList.sort(function(a1, a2) {
+		return a1.path.localeCompare(a2.path);
+	});
 	var p = new Permission();
 	p.renderData(p.root[0], pmsList);
 	return p.root;

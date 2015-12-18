@@ -6,8 +6,10 @@ package org.artifact.security.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.artifact.base.annotation.JsonFilter;
 import org.artifact.base.annotation.JsonResult;
 import org.artifact.security.condition.UserCondition;
+import org.artifact.security.domain.Role;
 import org.artifact.security.domain.User;
 import org.artifact.security.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -77,14 +79,14 @@ public class UserController {
 
 	@RequestMapping(value = "/get/{id}", method = RequestMethod.GET)
 	@ResponseBody
-	@JsonResult("根据主键获得用户信息")
+	@JsonResult(value = "根据主键获得用户信息", filter = { @JsonFilter(value = { "rolePermissionList" }, target = Role.class) })
 	public Object get(@PathVariable Integer id) {
 		return userService.getUserById(id);
 	}
 
 	@RequestMapping(value = "/getby/{account}", method = RequestMethod.GET)
 	@ResponseBody
-	@JsonResult("根据账号获得用户信息，用于账号判重")
+	@JsonResult(value = "根据账号获得用户信息，用于账号判重", filter = { @JsonFilter(value = { "rolePermissionList" }, target = Role.class) })
 	public Object getByAccout(@PathVariable String account) {
 		return userService.findUser(account, null);
 	}

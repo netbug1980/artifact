@@ -3,6 +3,7 @@
  */
 package org.artifact.security.controller;
 
+import org.artifact.base.annotation.JsonFilter;
 import org.artifact.base.annotation.JsonResult;
 import org.artifact.security.condition.PermissionCondition;
 import org.artifact.security.domain.Permission;
@@ -32,7 +33,7 @@ public class PermissionController {
 
 	@RequestMapping(value = "/search", method = RequestMethod.POST)
 	@ResponseBody
-	@JsonResult("查询所有资源")
+	@JsonResult(value = "查询所有资源", filter = { @JsonFilter(value = { "rolePermissionList" }, target = Permission.class) })
 	public Object search(@RequestBody PermissionCondition condition) {
 		return this.permissionService.find();
 	}
