@@ -51,15 +51,11 @@ module.exports = function UserContent(options){
 		delete user.verifypw;
 		obj.$container.html(tpl);
 		
-		//角色列表
+		//角色列表 与 权限树
 		var roles = $(user.userRoleList).map(function(i,item){
 			return item.role;
 		}).get();
 		this.randerRoleTr(roles);
-		
-		//权限树
-		
-		this.refreshPermissionTree();
 		
 		//保存基本信息
 		this.$header.find('.btn-group').Buttons([{
