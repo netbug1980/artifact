@@ -1,6 +1,11 @@
 package org.artifact.base.util;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
+
+import javax.imageio.ImageIO;
+
 /**
  * 提取Window 10 聚焦图片
  * <p>
@@ -18,8 +23,19 @@ public class ExtractFocusPicture {
 		if (f.isDirectory()) {
 			File[] fileArr = f.listFiles();
 			for (File s : fileArr) {
-				File t = new File(savedPath + File.separator + s.getName()
-						+ ".jpg");
+				String path = "";
+				try {
+					BufferedImage bi = ImageIO.read(s);
+					path = bi.getWidth() + "-" + bi.getHeight();
+				} catch (IOException e) {
+
+				}
+				File d = new File(savedPath + File.separator + path);
+				if (!d.exists()) {
+					d.mkdirs();
+				}
+				File t = new File(d.getAbsolutePath() + File.separator
+						+ s.getName() + ".jpg");
 				if (!t.exists()) {
 					FileUtil.copy(s, t);
 				}
