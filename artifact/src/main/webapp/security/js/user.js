@@ -30,9 +30,11 @@ module.exports = function UserContent(options){
 			title : '临时删除',
 			callback : function() {
 				$(this).closest('tr').remove();
+				obj.refreshPermissionTree();
 			}
 		}
 		]);
+		obj.refreshPermissionTree();
 	};
 	this.getRoleIds = function(){
 		return obj.$container.find('.panel-role tbody a').map(function(){
@@ -49,29 +51,11 @@ module.exports = function UserContent(options){
 		delete user.verifypw;
 		obj.$container.html(tpl);
 		
-		//角色列表
+		//角色列表 与 权限树
 		var roles = $(user.userRoleList).map(function(i,item){
 			return item.role;
 		}).get();
 		this.randerRoleTr(roles);
-		
-		//权限树
-		new AjaxProxy({
-			url : '/api/security/permission/search',
-			type : 'POST',
-			data : JSON.stringify({})
-		}).done(function(res) {
-			var data = Permission.structTreeData(res.result);
-			obj.$container.find('.panel-permission .panel-body').MyTree({
-				treeType : 'org',// org:组织机构；user：用户；
-				showCheck : false,
-				enableSearch : false,
-				spread : false,
-				spreadLevel : 0,
-				checkedData : [],
-				data : data
-			});
-		});
 		
 		//保存基本信息
 		this.$header.find('.btn-group').Buttons([{
@@ -262,6 +246,33 @@ module.exports = function UserContent(options){
 				$("#oldpassword").focus();
 			}
 		});
+	};
+	
+	/**
+	 * 刷新权限树
+	 */
+	this.refreshPermissionTree = function(){
+		var checkedArr = obj.getRoleIds();
+		if(checkedArr.length>0){
+			new AjaxProxy({
+				url : '/api/security/permission/findbyroleids',
+				type : 'POST',
+				data : JSON.stringify(checkedArr)
+			}).done(function(res) {
+				var data = Permission.structTreeData(res.result);
+				obj.$container.find('.panel-permission .panel-body').MyTree({
+					treeType : 'org',// org:组织机构；user：用户；
+					showCheck : false,
+					enableSearch : false,
+					spread : false,
+					spreadLevel : 0,
+					checkedData : [],
+					data : data
+				});
+			});
+		}else{
+			obj.$container.find('.panel-permission .panel-body').empty();
+		}
 	};
 	
 	this.loadUser(id);
